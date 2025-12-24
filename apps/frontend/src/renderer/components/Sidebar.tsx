@@ -155,8 +155,9 @@ export function Sidebar({
       const key = e.key.toUpperCase();
 
       // Find matching nav item
-      const allNavItems = [...projectNavItems, ...toolsNavItems];
-      const matchedItem = allNavItems.find((item) => item.shortcut === key);
+      const matchedItem = [...projectNavItems, ...toolsNavItems].find(
+        (item) => item.view && item.shortcut === key
+      );
 
       if (matchedItem?.view) {
         e.preventDefault();

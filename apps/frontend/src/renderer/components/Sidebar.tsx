@@ -15,7 +15,9 @@ import {
   FileText,
   Sparkles,
   GitBranch,
-  HelpCircle
+  HelpCircle,
+  Code2,
+  Cube
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { ScrollArea } from './ui/scroll-area';
@@ -58,25 +60,43 @@ interface SidebarProps {
 }
 
 interface NavItem {
-  id: SidebarView;
+  id: string;
   label: string;
   icon: React.ElementType;
   shortcut?: string;
+  view?: SidebarView;
+  onClick?: () => void;
 }
 
 const projectNavItems: NavItem[] = [
-  { id: 'kanban', label: 'Kanban Board', icon: LayoutGrid, shortcut: 'K' },
-  { id: 'terminals', label: 'Agent Terminals', icon: Terminal, shortcut: 'A' },
-  { id: 'insights', label: 'Insights', icon: Sparkles, shortcut: 'N' },
-  { id: 'roadmap', label: 'Roadmap', icon: Map, shortcut: 'D' },
-  { id: 'ideation', label: 'Ideation', icon: Lightbulb, shortcut: 'I' },
-  { id: 'changelog', label: 'Changelog', icon: FileText, shortcut: 'L' },
-  { id: 'context', label: 'Context', icon: BookOpen, shortcut: 'C' }
+  { id: 'kanban', view: 'kanban', label: 'Kanban Board', icon: LayoutGrid, shortcut: 'K' },
+  { id: 'terminals', view: 'terminals', label: 'Agent Terminals', icon: Terminal, shortcut: 'A' },
+  { id: 'insights', view: 'insights', label: 'Insights', icon: Sparkles, shortcut: 'N' },
+  { id: 'roadmap', view: 'roadmap', label: 'Roadmap', icon: Map, shortcut: 'D' },
+  { id: 'ideation', view: 'ideation', label: 'Ideation', icon: Lightbulb, shortcut: 'I' },
+  { id: 'changelog', view: 'changelog', label: 'Changelog', icon: FileText, shortcut: 'L' },
+  { id: 'context', view: 'context', label: 'Context', icon: BookOpen, shortcut: 'C' },
+  {
+    id: 'code-editor',
+    label: 'Code Editor',
+    icon: Code2,
+    onClick: () => {
+      /* Coming soon */
+    }
+  }
 ];
 
 const toolsNavItems: NavItem[] = [
-  { id: 'github-issues', label: 'GitHub Issues', icon: Github, shortcut: 'G' },
-  { id: 'worktrees', label: 'Worktrees', icon: GitBranch, shortcut: 'W' }
+  { id: 'github-issues', view: 'github-issues', label: 'GitHub Issues', icon: Github, shortcut: 'G' },
+  { id: 'worktrees', view: 'worktrees', label: 'Worktrees', icon: GitBranch, shortcut: 'W' },
+  {
+    id: 'unity',
+    label: 'Unity',
+    icon: Cube,
+    onClick: () => {
+      /* Coming soon */
+    }
+  }
 ];
 
 export function Sidebar({
@@ -102,10 +122,10 @@ export function Sidebar({
   const selectedProject = projects.find((p) => p.id === selectedProjectId);
 
   // Keyboard shortcuts
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Don't trigger shortcuts when typing in inputs
-      if (
+    useEffect(() => {
+      const handleKeyDown = (e: KeyboardEvent) => {
+        // Don't trigger shortcuts when typing in inputs
+        if (
         e.target instanceof HTMLInputElement ||
         e.target instanceof HTMLTextAreaElement ||
         e.target instanceof HTMLSelectElement ||
@@ -122,15 +142,15 @@ export function Sidebar({
 
       const key = e.key.toUpperCase();
 
-      // Find matching nav item
-      const allNavItems = [...projectNavItems, ...toolsNavItems];
-      const matchedItem = allNavItems.find((item) => item.shortcut === key);
+        // Find matching nav item
+        const allNavItems = [...projectNavItems, ...toolsNavItems];
+        const matchedItem = allNavItems.find((item) => item.shortcut === key);
 
-      if (matchedItem) {
-        e.preventDefault();
-        onViewChange?.(matchedItem.id);
-      }
-    };
+        if (matchedItem?.view) {
+          e.preventDefault();
+          onViewChange?.(matchedItem.view);
+        }
+      };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
@@ -253,13 +273,24 @@ export function Sidebar({
   };
 
   const renderNavItem = (item: NavItem) => {
-    const isActive = activeView === item.id;
+    const isActive = item.view ? activeView === item.view : false;
     const Icon = item.icon;
+
+    const handleClick = () => {
+      if (item.onClick) {
+        item.onClick();
+        return;
+      }
+
+      if (item.view) {
+        handleNavClick(item.view);
+      }
+    };
 
     return (
       <button
         key={item.id}
-        onClick={() => handleNavClick(item.id)}
+        onClick={handleClick}
         disabled={!selectedProjectId}
         className={cn(
           'flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all duration-200',

@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import {
   Plus,
   Settings,
-  Trash2,
   LayoutGrid,
   Terminal,
   Map,
@@ -15,7 +14,9 @@ import {
   FileText,
   Sparkles,
   GitBranch,
-  HelpCircle
+  HelpCircle,
+  Code,
+  Box
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { ScrollArea } from './ui/scroll-area';
@@ -50,6 +51,8 @@ import type { Project, AutoBuildVersionInfo, GitStatus } from '../../shared/type
 
 export type SidebarView = 'kanban' | 'terminals' | 'roadmap' | 'context' | 'ideation' | 'github-issues' | 'changelog' | 'insights' | 'worktrees' | 'agent-tools';
 
+type NavItemId = SidebarView | 'code-editor' | 'unity';
+
 interface SidebarProps {
   onSettingsClick: () => void;
   onNewTaskClick: () => void;
@@ -58,11 +61,28 @@ interface SidebarProps {
 }
 
 interface NavItem {
-  id: SidebarView;
+  id: NavItemId;
   label: string;
   icon: React.ElementType;
   shortcut?: string;
+  onClick?: () => void;
 }
+
+const sidebarViews: SidebarView[] = [
+  'kanban',
+  'terminals',
+  'roadmap',
+  'context',
+  'ideation',
+  'github-issues',
+  'changelog',
+  'insights',
+  'worktrees',
+  'agent-tools'
+];
+
+const isSidebarView = (view: NavItemId): view is SidebarView =>
+  sidebarViews.includes(view as SidebarView);
 
 const projectNavItems: NavItem[] = [
   { id: 'kanban', label: 'Kanban Board', icon: LayoutGrid, shortcut: 'K' },
@@ -71,12 +91,14 @@ const projectNavItems: NavItem[] = [
   { id: 'roadmap', label: 'Roadmap', icon: Map, shortcut: 'D' },
   { id: 'ideation', label: 'Ideation', icon: Lightbulb, shortcut: 'I' },
   { id: 'changelog', label: 'Changelog', icon: FileText, shortcut: 'L' },
-  { id: 'context', label: 'Context', icon: BookOpen, shortcut: 'C' }
+  { id: 'context', label: 'Context', icon: BookOpen, shortcut: 'C' },
+  { id: 'code-editor', label: 'Code Editor', icon: Code, onClick: () => {} }
 ];
 
 const toolsNavItems: NavItem[] = [
   { id: 'github-issues', label: 'GitHub Issues', icon: Github, shortcut: 'G' },
-  { id: 'worktrees', label: 'Worktrees', icon: GitBranch, shortcut: 'W' }
+  { id: 'worktrees', label: 'Worktrees', icon: GitBranch, shortcut: 'W' },
+  { id: 'unity', label: 'Unity', icon: Box, onClick: () => {} }
 ];
 
 export function Sidebar({
@@ -126,7 +148,7 @@ export function Sidebar({
       const allNavItems = [...projectNavItems, ...toolsNavItems];
       const matchedItem = allNavItems.find((item) => item.shortcut === key);
 
-      if (matchedItem) {
+      if (matchedItem && isSidebarView(matchedItem.id)) {
         e.preventDefault();
         onViewChange?.(matchedItem.id);
       }
@@ -248,18 +270,25 @@ export function Sidebar({
   };
 
 
-  const handleNavClick = (view: SidebarView) => {
-    onViewChange?.(view);
+  const handleNavClick = (item: NavItem) => {
+    if (item.onClick) {
+      item.onClick();
+      return;
+    }
+
+    if (isSidebarView(item.id)) {
+      onViewChange?.(item.id);
+    }
   };
 
   const renderNavItem = (item: NavItem) => {
-    const isActive = activeView === item.id;
+    const isActive = isSidebarView(item.id) && activeView === item.id;
     const Icon = item.icon;
 
     return (
       <button
         key={item.id}
-        onClick={() => handleNavClick(item.id)}
+        onClick={() => handleNavClick(item)}
         disabled={!selectedProjectId}
         className={cn(
           'flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all duration-200',

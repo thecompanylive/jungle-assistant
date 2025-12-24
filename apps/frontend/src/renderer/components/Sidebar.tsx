@@ -50,7 +50,19 @@ import { GitSetupModal } from './GitSetupModal';
 import { RateLimitIndicator } from './RateLimitIndicator';
 import type { Project, AutoBuildVersionInfo, GitStatus } from '../../shared/types';
 
-export type SidebarView = 'kanban' | 'terminals' | 'roadmap' | 'context' | 'ideation' | 'github-issues' | 'changelog' | 'insights' | 'worktrees' | 'agent-tools';
+export type SidebarView =
+  | 'kanban'
+  | 'terminals'
+  | 'roadmap'
+  | 'context'
+  | 'ideation'
+  | 'github-issues'
+  | 'changelog'
+  | 'insights'
+  | 'worktrees'
+  | 'agent-tools'
+  | 'code-editor'
+  | 'unity';
 
 interface SidebarProps {
   onSettingsClick: () => void;
@@ -60,7 +72,7 @@ interface SidebarProps {
 }
 
 interface NavItem {
-  id: string;
+  id: SidebarView;
   label: string;
   icon: React.ElementType;
   shortcut?: string;
@@ -122,10 +134,10 @@ export function Sidebar({
   const selectedProject = projects.find((p) => p.id === selectedProjectId);
 
   // Keyboard shortcuts
-    useEffect(() => {
-      const handleKeyDown = (e: KeyboardEvent) => {
-        // Don't trigger shortcuts when typing in inputs
-        if (
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't trigger shortcuts when typing in inputs
+      if (
         e.target instanceof HTMLInputElement ||
         e.target instanceof HTMLTextAreaElement ||
         e.target instanceof HTMLSelectElement ||
@@ -142,15 +154,15 @@ export function Sidebar({
 
       const key = e.key.toUpperCase();
 
-        // Find matching nav item
-        const allNavItems = [...projectNavItems, ...toolsNavItems];
-        const matchedItem = allNavItems.find((item) => item.shortcut === key);
+      // Find matching nav item
+      const allNavItems = [...projectNavItems, ...toolsNavItems];
+      const matchedItem = allNavItems.find((item) => item.shortcut === key);
 
-        if (matchedItem?.view) {
-          e.preventDefault();
-          onViewChange?.(matchedItem.view);
-        }
-      };
+      if (matchedItem?.view) {
+        e.preventDefault();
+        onViewChange?.(matchedItem.view);
+      }
+    };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);

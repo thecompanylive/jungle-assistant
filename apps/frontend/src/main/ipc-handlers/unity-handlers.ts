@@ -4,7 +4,7 @@ import { join, dirname } from 'path';
 import { spawn } from 'child_process';
 import { IPC_CHANNELS } from '../../shared/constants';
 import type { IPCResult } from '../../shared/types';
-import { getProjectById } from '../project-manager';
+import { projectStore } from '../project-store';
 
 interface UnityProjectInfo {
   isUnityProject: boolean;
@@ -144,7 +144,7 @@ function discoverUnityEditors(): UnityEditorInfo[] {
  * Get Unity settings for a project
  */
 function getUnitySettings(projectId: string): UnitySettings {
-  const project = getProjectById(projectId);
+  const project = projectStore.getProject(projectId);
   if (!project) {
     throw new Error('Project not found');
   }
@@ -167,7 +167,7 @@ function getUnitySettings(projectId: string): UnitySettings {
  * Save Unity settings for a project
  */
 function saveUnitySettings(projectId: string, settings: UnitySettings): void {
-  const project = getProjectById(projectId);
+  const project = projectStore.getProject(projectId);
   if (!project) {
     throw new Error('Project not found');
   }
@@ -187,7 +187,7 @@ function saveUnitySettings(projectId: string, settings: UnitySettings): void {
  * Get the Unity runs directory for a project
  */
 function getUnityRunsDir(projectId: string): string {
-  const project = getProjectById(projectId);
+  const project = projectStore.getProject(projectId);
   if (!project) {
     throw new Error('Project not found');
   }
@@ -269,7 +269,7 @@ function saveRunRecord(projectId: string, run: UnityRun): void {
  * Run Unity EditMode tests
  */
 async function runEditModeTests(projectId: string, editorPath: string): Promise<void> {
-  const project = getProjectById(projectId);
+  const project = projectStore.getProject(projectId);
   if (!project) {
     throw new Error('Project not found');
   }
@@ -366,7 +366,7 @@ async function runEditModeTests(projectId: string, editorPath: string): Promise<
  * Run Unity custom build
  */
 async function runBuild(projectId: string, editorPath: string, executeMethod: string): Promise<void> {
-  const project = getProjectById(projectId);
+  const project = projectStore.getProject(projectId);
   if (!project) {
     throw new Error('Project not found');
   }

@@ -637,7 +637,6 @@ export interface ElectronAPI {
     }) => void
   ) => () => void;
 
-<<<<<<< HEAD
   // Unity operations
   detectUnityProject: (projectPath: string) => Promise<IPCResult<{
     isUnityProject: boolean;
@@ -947,7 +946,7 @@ export interface ElectronAPI {
   onCSharpLspPublishDiagnostics: (callback: (params: CSharpLspPublishDiagnosticsParams) => void) => () => void;
   onCSharpLspLog: (callback: (message: CSharpLspLogMessage) => void) => () => void;
   onCSharpLspProgress: (callback: (message: CSharpLspProgressMessage) => void) => () => void;
-=======
+
   // GitHub API (nested for organized access)
   github: import('../../preload/api/modules/github-api').GitHubAPI;
 
@@ -967,7 +966,6 @@ export interface ElectronAPI {
     size: number;
     modified: string;
   }>>;
->>>>>>> AndyMik90/develop
 }
 
 declare global {

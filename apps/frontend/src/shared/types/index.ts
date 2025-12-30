@@ -16,11 +16,8 @@ export * from './insights';
 export * from './roadmap';
 export * from './integrations';
 export * from './app-update';
-<<<<<<< HEAD
 export * from './csharp-lsp';
-=======
 export * from './cli';
->>>>>>> AndyMik90/develop
 
 // IPC types (must be last to use types from other modules)
 export * from './ipc';

@@ -13,12 +13,17 @@ import {
   Download,
   RefreshCw,
   Github,
+  GitPullRequest,
   FileText,
   Sparkles,
   GitBranch,
   HelpCircle,
+<<<<<<< HEAD
   Code2,
   Box
+=======
+  Wrench
+>>>>>>> AndyMik90/develop
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { ScrollArea } from './ui/scroll-area';
@@ -41,9 +46,7 @@ import { cn, isMonacoEditorFocused } from '../lib/utils';
 import {
   useProjectStore,
   removeProject,
-  initializeProject,
-  checkProjectVersion,
-  updateProjectAutoBuild
+  initializeProject
 } from '../stores/project-store';
 import { useSettingsStore } from '../stores/settings-store';
 import { AddProjectModal } from './AddProjectModal';
@@ -51,6 +54,7 @@ import { GitSetupModal } from './GitSetupModal';
 import { RateLimitIndicator } from './RateLimitIndicator';
 import type { Project, AutoBuildVersionInfo, GitStatus } from '../../shared/types';
 
+<<<<<<< HEAD
 export type SidebarView =
     | 'kanban'
     | 'terminals'
@@ -64,6 +68,9 @@ export type SidebarView =
     | 'agent-tools'
     | 'code-editor'
     | 'unity';
+=======
+export type SidebarView = 'kanban' | 'terminals' | 'roadmap' | 'context' | 'ideation' | 'github-issues' | 'github-prs' | 'changelog' | 'insights' | 'worktrees' | 'agent-tools';
+>>>>>>> AndyMik90/develop
 
 interface SidebarProps {
   onSettingsClick: () => void;
@@ -93,9 +100,15 @@ const projectNavItems: NavItem[] = [
 
 const toolsNavItems: NavItem[] = [
   { id: 'github-issues', labelKey: 'navigation:items.githubIssues', icon: Github, shortcut: 'G' },
+<<<<<<< HEAD
   { id: 'worktrees', labelKey: 'navigation:items.worktrees', icon: GitBranch, shortcut: 'W' },
   // Added from HEAD (jungle-assistant/develop)
   { id: 'unity', labelKey: 'navigation:items.unity', icon: Box, shortcut: 'U' }
+=======
+  { id: 'github-prs', labelKey: 'navigation:items.githubPRs', icon: GitPullRequest, shortcut: 'P' },
+  { id: 'worktrees', labelKey: 'navigation:items.worktrees', icon: GitBranch, shortcut: 'W' },
+  { id: 'agent-tools', labelKey: 'navigation:items.agentTools', icon: Wrench, shortcut: 'M' }
+>>>>>>> AndyMik90/develop
 ];
 
 export function Sidebar({
@@ -112,11 +125,9 @@ export function Sidebar({
 
   const [showAddProjectModal, setShowAddProjectModal] = useState(false);
   const [showInitDialog, setShowInitDialog] = useState(false);
-  const [showUpdateDialog, setShowUpdateDialog] = useState(false);
   const [showGitSetupModal, setShowGitSetupModal] = useState(false);
   const [gitStatus, setGitStatus] = useState<GitStatus | null>(null);
   const [pendingProject, setPendingProject] = useState<Project | null>(null);
-  const [_versionInfo, setVersionInfo] = useState<AutoBuildVersionInfo | null>(null);
   const [isInitializing, setIsInitializing] = useState(false);
 
   const selectedProject = projects.find((p) => p.id === selectedProjectId);
@@ -160,20 +171,6 @@ export function Sidebar({
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [selectedProjectId, onViewChange]);
-
-  // Check for updates when project changes
-  useEffect(() => {
-    const checkUpdates = async () => {
-      if (selectedProjectId && settings.autoUpdateAutoBuild) {
-        const info = await checkProjectVersion(selectedProjectId);
-        if (info?.updateAvailable) {
-          setVersionInfo(info);
-          setShowUpdateDialog(true);
-        }
-      }
-    };
-    checkUpdates();
-  }, [selectedProjectId, settings.autoUpdateAutoBuild]);
 
   // Check git status when project changes
   useEffect(() => {
@@ -230,26 +227,6 @@ export function Sidebar({
   const handleSkipInit = () => {
     setShowInitDialog(false);
     setPendingProject(null);
-  };
-
-  const _handleUpdate = async () => {
-    if (!selectedProjectId) return;
-
-    setIsInitializing(true);
-    try {
-      const result = await updateProjectAutoBuild(selectedProjectId);
-      if (result?.success) {
-        setShowUpdateDialog(false);
-        setVersionInfo(null);
-      }
-    } finally {
-      setIsInitializing(false);
-    }
-  };
-
-  const _handleSkipUpdate = () => {
-    setShowUpdateDialog(false);
-    setVersionInfo(null);
   };
 
   const handleGitInitialized = async () => {
@@ -456,6 +433,7 @@ export function Sidebar({
           </DialogContent>
         </Dialog>
 
+<<<<<<< HEAD
         {/* Update Jungle Assistant Dialog - Deprecated, updateAvailable is always false now */}
         <Dialog open={showUpdateDialog} onOpenChange={setShowUpdateDialog}>
           <DialogContent>
@@ -480,6 +458,14 @@ export function Sidebar({
             onOpenChange={setShowAddProjectModal}
             onProjectAdded={handleProjectAdded}
         />
+=======
+      {/* Add Project Modal */}
+      <AddProjectModal
+        open={showAddProjectModal}
+        onOpenChange={setShowAddProjectModal}
+        onProjectAdded={handleProjectAdded}
+      />
+>>>>>>> AndyMik90/develop
 
         {/* Git Setup Modal */}
         <GitSetupModal

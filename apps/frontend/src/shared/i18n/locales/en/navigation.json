@@ -12,10 +12,15 @@
     "changelog": "Changelog",
     "context": "Context",
     "githubIssues": "GitHub Issues",
+    "githubPRs": "GitHub PRs",
     "gitlabIssues": "GitLab Issues",
     "worktrees": "Worktrees",
+<<<<<<< HEAD
     "codeEditor": "Code Editor",
     "unity": "Unity"
+=======
+    "agentTools": "MCP Overview"
+>>>>>>> AndyMik90/develop
   },
   "actions": {
     "settings": "Settings",

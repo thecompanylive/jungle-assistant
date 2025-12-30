@@ -24,8 +24,13 @@ export interface ProjectSettings {
   graphitiMcpUrl?: string;
   /** Main branch name for worktree creation (default: auto-detected or 'main') */
   mainBranch?: string;
+<<<<<<< HEAD
   /** Recent files in code editor (workspace-relative paths, most recent first) */
   codeEditorRecentFiles?: string[];
+=======
+  /** Include CLAUDE.md instructions in agent system prompt (default: true) */
+  useClaudeMd?: boolean;
+>>>>>>> AndyMik90/develop
 }
 
 export interface NotificationSettings {
@@ -52,7 +57,7 @@ export interface ServiceInfo {
   path: string;
   language?: string;
   framework?: string;
-  type?: 'backend' | 'frontend' | 'worker' | 'scraper' | 'library' | 'proxy' | 'unknown';
+  type?: 'backend' | 'frontend' | 'worker' | 'scraper' | 'library' | 'proxy' | 'mobile' | 'desktop' | 'unknown';
   package_manager?: string;
   default_port?: number;
   entry_point?: string;
@@ -67,6 +72,9 @@ export interface ServiceInfo {
   styling?: string;
   state_management?: string;
   build_tool?: string;
+  // iOS/Swift specific
+  apple_frameworks?: string[];
+  spm_dependencies?: string[];
   dockerfile?: string;
   consumes?: string[];
   environment?: {
@@ -290,6 +298,7 @@ export interface ProjectEnvConfig {
   githubToken?: string;
   githubRepo?: string; // Format: owner/repo
   githubAutoSync?: boolean; // Auto-sync issues on project load
+  githubAuthMethod?: 'oauth' | 'pat'; // How the token was obtained
 
   // Git/Worktree Settings
   defaultBranch?: string; // Base branch for worktree creation (e.g., 'main', 'develop')

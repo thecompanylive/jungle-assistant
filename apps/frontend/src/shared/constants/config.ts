@@ -22,6 +22,8 @@ export const DEFAULT_APP_SETTINGS = {
   defaultModel: 'opus',
   agentFramework: 'auto-claude',
   pythonPath: undefined as string | undefined,
+  gitPath: undefined as string | undefined,
+  githubCLIPath: undefined as string | undefined,
   autoBuildPath: undefined as string | undefined,
   autoUpdateAutoBuild: true,
   autoNameTerminals: true,
@@ -65,7 +67,9 @@ export const DEFAULT_PROJECT_SETTINGS = {
   },
   // Graphiti MCP server for agent-accessible knowledge graph (enabled by default)
   graphitiMcpEnabled: true,
-  graphitiMcpUrl: 'http://localhost:8000/mcp/'
+  graphitiMcpUrl: 'http://localhost:8000/mcp/',
+  // Include CLAUDE.md instructions in agent context (enabled by default)
+  useClaudeMd: true
 };
 
 // ============================================

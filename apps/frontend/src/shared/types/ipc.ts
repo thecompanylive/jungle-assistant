@@ -3,6 +3,7 @@
  */
 
 import type { IPCResult } from './common';
+import type { SupportedIDE, SupportedTerminal } from './settings';
 import type {
   Project,
   ProjectSettings,
@@ -133,7 +134,6 @@ export interface ElectronAPI {
   getProjects: () => Promise<IPCResult<Project[]>>;
   updateProjectSettings: (projectId: string, settings: Partial<ProjectSettings>) => Promise<IPCResult>;
   initializeProject: (projectId: string) => Promise<IPCResult<InitializationResult>>;
-  updateProjectAutoBuild: (projectId: string) => Promise<IPCResult<InitializationResult>>;
   checkProjectVersion: (projectId: string) => Promise<IPCResult<AutoBuildVersionInfo>>;
 
   // Tab State (persisted in main process for reliability)
@@ -160,6 +160,9 @@ export interface ElectronAPI {
   mergeWorktreePreview: (taskId: string) => Promise<IPCResult<WorktreeMergeResult>>;
   discardWorktree: (taskId: string) => Promise<IPCResult<WorktreeDiscardResult>>;
   listWorktrees: (projectId: string) => Promise<IPCResult<WorktreeListResult>>;
+  worktreeOpenInIDE: (worktreePath: string, ide: SupportedIDE, customPath?: string) => Promise<IPCResult<{ opened: boolean }>>;
+  worktreeOpenInTerminal: (worktreePath: string, terminal: SupportedTerminal, customPath?: string) => Promise<IPCResult<{ opened: boolean }>>;
+  worktreeDetectTools: () => Promise<IPCResult<{ ides: Array<{ id: string; name: string; path: string; installed: boolean }>; terminals: Array<{ id: string; name: string; path: string; installed: boolean }> }>>;
 
   // Task archive operations
   archiveTasks: (projectId: string, taskIds: string[], version?: string) => Promise<IPCResult<boolean>>;
@@ -189,6 +192,7 @@ export interface ElectronAPI {
   getTerminalSessionsForDate: (date: string, projectPath: string) => Promise<IPCResult<TerminalSession[]>>;
   restoreTerminalSessionsFromDate: (date: string, projectPath: string, cols?: number, rows?: number) => Promise<IPCResult<SessionDateRestoreResult>>;
   saveTerminalBuffer: (terminalId: string, serialized: string) => Promise<void>;
+  checkTerminalPtyAlive: (terminalId: string) => Promise<IPCResult<{ alive: boolean }>>;
 
   // Terminal event listeners
   onTerminalOutput: (callback: (id: string, data: string) => void) => () => void;
@@ -247,6 +251,12 @@ export interface ElectronAPI {
   // App settings
   getSettings: () => Promise<IPCResult<AppSettings>>;
   saveSettings: (settings: Partial<AppSettings>) => Promise<IPCResult>;
+  getCliToolsInfo: () => Promise<IPCResult<{
+    python: import('./cli').ToolDetectionResult;
+    git: import('./cli').ToolDetectionResult;
+    gh: import('./cli').ToolDetectionResult;
+    claude: import('./cli').ToolDetectionResult;
+  }>>;
 
   // Dialog operations
   selectDirectory: () => Promise<string | null>;
@@ -362,6 +372,11 @@ export interface ElectronAPI {
   ) => Promise<IPCResult<{ remoteUrl: string }>>;
   listGitHubOrgs: () => Promise<IPCResult<{ orgs: Array<{ login: string; avatarUrl?: string }> }>>;
 
+  // GitHub OAuth device code event (streams device code during auth flow)
+  onGitHubAuthDeviceCode: (
+    callback: (data: { deviceCode: string; authUrl: string; browserOpened: boolean }) => void
+  ) => () => void;
+
   // GitHub event listeners
   onGitHubInvestigationProgress: (
     callback: (projectId: string, status: GitHubInvestigationStatus) => void
@@ -453,6 +468,7 @@ export interface ElectronAPI {
 
   // Shell operations
   openExternal: (url: string) => Promise<void>;
+  openTerminal: (dirPath: string) => Promise<IPCResult<void>>;
 
   // Auto Claude source environment operations
   getSourceEnv: () => Promise<IPCResult<SourceEnvConfig>>;
@@ -621,6 +637,7 @@ export interface ElectronAPI {
     }) => void
   ) => () => void;
 
+<<<<<<< HEAD
   // Unity operations
   detectUnityProject: (projectPath: string) => Promise<IPCResult<{
     isUnityProject: boolean;
@@ -930,6 +947,27 @@ export interface ElectronAPI {
   onCSharpLspPublishDiagnostics: (callback: (params: CSharpLspPublishDiagnosticsParams) => void) => () => void;
   onCSharpLspLog: (callback: (message: CSharpLspLogMessage) => void) => () => void;
   onCSharpLspProgress: (callback: (message: CSharpLspProgressMessage) => void) => () => void;
+=======
+  // GitHub API (nested for organized access)
+  github: import('../../preload/api/modules/github-api').GitHubAPI;
+
+  // Debug operations
+  getDebugInfo: () => Promise<{
+    systemInfo: Record<string, string>;
+    recentErrors: string[];
+    logsPath: string;
+    debugReport: string;
+  }>;
+  openLogsFolder: () => Promise<{ success: boolean; error?: string }>;
+  copyDebugInfo: () => Promise<{ success: boolean; error?: string }>;
+  getRecentErrors: (maxCount?: number) => Promise<string[]>;
+  listLogFiles: () => Promise<Array<{
+    name: string;
+    path: string;
+    size: number;
+    modified: string;
+  }>>;
+>>>>>>> AndyMik90/develop
 }
 
 declare global {

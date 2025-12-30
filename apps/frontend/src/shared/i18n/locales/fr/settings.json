@@ -17,13 +17,17 @@
       "title": "Langue",
       "description": "Choisissez votre langue préférée"
     },
+    "devtools": {
+      "title": "Outils de développement",
+      "description": "Préférences IDE et terminal"
+    },
     "agent": {
       "title": "Paramètres de l'agent",
       "description": "Modèle par défaut et framework"
     },
     "paths": {
       "title": "Chemins",
-      "description": "Chemins Python et framework"
+      "description": "Outils CLI et chemins framework"
     },
     "integrations": {
       "title": "Intégrations",
@@ -36,6 +40,10 @@
     "notifications": {
       "title": "Notifications",
       "description": "Préférences d'alertes"
+    },
+    "debug": {
+      "title": "Debug & Logs",
+      "description": "Outils de dépannage"
     }
   },
   "language": {
@@ -49,8 +57,7 @@
     "fineTuneDescription": "Ajustez de 75% à 200% par incréments de 5%",
     "default": "Par défaut",
     "comfortable": "Confortable",
-    "large": "Grand",
-    "preview": "Les changements sont prévisualisés immédiatement. Cliquez sur Enregistrer pour les conserver."
+    "large": "Grand"
   },
   "general": {
     "otherAgentSettings": "Autres paramètres de l'agent",
@@ -67,8 +74,27 @@
     "paths": "Chemins",
     "pathsDescription": "Configurer les chemins des exécutables et du framework",
     "pythonPath": "Chemin Python",
-    "pythonPathDescription": "Chemin vers l'exécutable Python (laisser vide pour la valeur par défaut)",
+    "pythonPathDescription": "Chemin vers l'exécutable Python (laisser vide pour détection automatique)",
     "pythonPathPlaceholder": "python3 (par défaut)",
+    "gitPath": "Chemin Git",
+    "gitPathDescription": "Chemin vers l'exécutable Git (laisser vide pour détection automatique)",
+    "gitPathPlaceholder": "git (par défaut)",
+    "githubCLIPath": "Chemin GitHub CLI",
+    "githubCLIPathDescription": "Chemin vers l'exécutable GitHub CLI (gh) (laisser vide pour détection automatique)",
+    "githubCLIPathPlaceholder": "gh (par défaut)",
+    "claudePath": "Chemin Claude CLI",
+    "claudePathDescription": "Chemin vers l'exécutable Claude CLI (laisser vide pour détection automatique)",
+    "claudePathPlaceholder": "claude (par défaut)",
+    "detectedPath": "Détecté automatiquement",
+    "detectedVersion": "Version",
+    "detectedSource": "Source",
+    "sourceUserConfig": "Configuration utilisateur",
+    "sourceVenv": "Environnement virtuel",
+    "sourceHomebrew": "Homebrew",
+    "sourceSystemPath": "PATH système",
+    "sourceBundled": "Intégré",
+    "sourceFallback": "Valeur par défaut",
+    "notDetected": "Non détecté",
     "autoClaudePath": "Chemin Auto Claude",
     "autoClaudePathDescription": "Chemin relatif vers le répertoire auto-claude dans les projets",
     "autoClaudePathPlaceholder": "auto-claude (par défaut)",
@@ -85,6 +111,30 @@
     "system": "Système",
     "colorTheme": "Thème de couleur",
     "colorThemeDescription": "Choisissez votre palette de couleurs préférée"
+  },
+  "devtools": {
+    "title": "Outils de développement",
+    "description": "Configurez votre IDE et terminal préférés pour travailler avec les worktrees",
+    "detecting": "Détection des outils installés...",
+    "detectAgain": "Détecter à nouveau",
+    "ide": {
+      "label": "IDE préféré",
+      "description": "Auto Claude ouvrira les worktrees dans cet éditeur",
+      "placeholder": "Sélectionner un IDE...",
+      "customPath": "Chemin IDE personnalisé",
+      "customPathPlaceholder": "/chemin/vers/votre/ide"
+    },
+    "terminal": {
+      "label": "Terminal préféré",
+      "description": "Auto Claude ouvrira les sessions terminal ici",
+      "placeholder": "Sélectionner un terminal...",
+      "customPath": "Chemin terminal personnalisé",
+      "customPathPlaceholder": "/chemin/vers/votre/terminal"
+    },
+    "detected": "Détecté",
+    "notInstalled": "Non installé",
+    "detectedSummary": "Détecté sur votre système :",
+    "noToolsDetected": "Aucun outil supplémentaire détecté (VS Code et le terminal système seront utilisés)"
   },
   "updates": {
     "title": "Mises à jour",
@@ -129,7 +179,9 @@
   "projectSections": {
     "general": {
       "title": "Général",
-      "description": "Auto-Build et configuration de l'agent"
+      "description": "Auto-Build et configuration de l'agent",
+      "useClaudeMd": "Utiliser CLAUDE.md",
+      "useClaudeMdDescription": "Inclure les instructions CLAUDE.md dans le contexte de l'agent"
     },
     "claude": {
       "title": "Auth Claude",
@@ -236,5 +288,19 @@
     "apiKeysInfo": "Les clés définies ici sont utilisées par défaut. Les projets individuels peuvent les remplacer dans leurs paramètres.",
     "openaiKey": "Clé API OpenAI",
     "openaiKeyDescription": "Requise pour le backend mémoire Graphiti (embeddings)"
+  },
+  "debug": {
+    "title": "Debug & Logs",
+    "description": "Accédez aux logs et informations de débogage pour le dépannage",
+    "openLogsFolder": "Ouvrir le dossier des logs",
+    "copyDebugInfo": "Copier les infos de débogage",
+    "copied": "Copié !",
+    "loadInfo": "Charger les infos de débogage",
+    "systemInfo": "Informations système",
+    "logsLocation": "Emplacement des logs",
+    "recentErrors": "Erreurs récentes",
+    "noRecentErrors": "Aucune erreur récente",
+    "helpTitle": "Signaler des problèmes",
+    "helpText": "Lors du signalement de bugs, cliquez sur \"Copier les infos de débogage\" pour obtenir les informations système et les erreurs récentes qui nous aident à diagnostiquer le problème."
   }
 }

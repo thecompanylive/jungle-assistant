@@ -113,6 +113,7 @@ const browserMockAPI: ElectronAPI = {
   // Infrastructure & Docker Operations
   ...infrastructureMock,
 
+<<<<<<< HEAD
   // Unity Operations
   ...unityMock,
 
@@ -121,6 +122,85 @@ const browserMockAPI: ElectronAPI = {
 
   // C# LSP Operations
   ...csharpLspMock
+=======
+  // GitHub API
+  github: {
+    getGitHubRepositories: async () => ({ success: true, data: [] }),
+    getGitHubIssues: async () => ({ success: true, data: [] }),
+    getGitHubIssue: async () => ({ success: true, data: null as any }),
+    getIssueComments: async () => ({ success: true, data: [] }),
+    checkGitHubConnection: async () => ({ success: true, data: { connected: false, repoFullName: undefined, error: undefined } }),
+    investigateGitHubIssue: () => {},
+    importGitHubIssues: async () => ({ success: true, data: { success: true, imported: 0, failed: 0, issues: [] } }),
+    createGitHubRelease: async () => ({ success: true, data: { url: '' } }),
+    suggestReleaseVersion: async () => ({ success: true, data: { suggestedVersion: '1.0.0', currentVersion: '0.0.0', bumpType: 'minor' as const, commitCount: 0, reason: 'Initial' } }),
+    checkGitHubCli: async () => ({ success: true, data: { installed: false } }),
+    checkGitHubAuth: async () => ({ success: true, data: { authenticated: false } }),
+    startGitHubAuth: async () => ({ success: true, data: { success: false } }),
+    getGitHubToken: async () => ({ success: true, data: { token: '' } }),
+    getGitHubUser: async () => ({ success: true, data: { username: '' } }),
+    listGitHubUserRepos: async () => ({ success: true, data: { repos: [] } }),
+    detectGitHubRepo: async () => ({ success: true, data: '' }),
+    getGitHubBranches: async () => ({ success: true, data: [] }),
+    createGitHubRepo: async () => ({ success: true, data: { fullName: '', url: '' } }),
+    addGitRemote: async () => ({ success: true, data: { remoteUrl: '' } }),
+    listGitHubOrgs: async () => ({ success: true, data: { orgs: [] } }),
+    onGitHubAuthDeviceCode: () => () => {},
+    onGitHubInvestigationProgress: () => () => {},
+    onGitHubInvestigationComplete: () => () => {},
+    onGitHubInvestigationError: () => () => {},
+    getAutoFixConfig: async () => null,
+    saveAutoFixConfig: async () => true,
+    getAutoFixQueue: async () => [],
+    checkAutoFixLabels: async () => [],
+    checkNewIssues: async () => [],
+    startAutoFix: () => {},
+    onAutoFixProgress: () => () => {},
+    onAutoFixComplete: () => () => {},
+    onAutoFixError: () => () => {},
+    listPRs: async () => [],
+    runPRReview: () => {},
+    cancelPRReview: async () => true,
+    postPRReview: async () => true,
+    postPRComment: async () => true,
+    mergePR: async () => true,
+    assignPR: async () => true,
+    getPRReview: async () => null,
+    deletePRReview: async () => true,
+    checkNewCommits: async () => ({ hasNewCommits: false, newCommitCount: 0 }),
+    runFollowupReview: () => {},
+    onPRReviewProgress: () => () => {},
+    onPRReviewComplete: () => () => {},
+    onPRReviewError: () => () => {},
+    batchAutoFix: () => {},
+    getBatches: async () => [],
+    onBatchProgress: () => () => {},
+    onBatchComplete: () => () => {},
+    onBatchError: () => () => {},
+    // Analyze & Group Issues (proactive workflow)
+    analyzeIssuesPreview: () => {},
+    approveBatches: async () => ({ success: true, batches: [] }),
+    onAnalyzePreviewProgress: () => () => {},
+    onAnalyzePreviewComplete: () => () => {},
+    onAnalyzePreviewError: () => () => {}
+  },
+
+  // Debug Operations
+  getDebugInfo: async () => ({
+    systemInfo: {
+      appVersion: '0.0.0-browser-mock',
+      platform: 'browser',
+      isPackaged: 'false'
+    },
+    recentErrors: [],
+    logsPath: '/mock/logs',
+    debugReport: '[Browser Mock] Debug report not available in browser mode'
+  }),
+  openLogsFolder: async () => ({ success: false, error: 'Not available in browser mode' }),
+  copyDebugInfo: async () => ({ success: false, error: 'Not available in browser mode' }),
+  getRecentErrors: async () => [],
+  listLogFiles: async () => []
+>>>>>>> AndyMik90/develop
 };
 
 /**

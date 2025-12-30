@@ -30,7 +30,9 @@
   },
   "oauth": {
     "title": "Claude Authentication",
-    "description": "Connect your Claude account to enable AI features"
+    "description": "Connect your Claude account to enable AI features",
+    "keychainTitle": "Secure Storage",
+    "keychainDescription": "Your tokens are encrypted using your system's keychain. You may see a password prompt from macOS — click \"Always Allow\" to avoid seeing it again."
   },
   "memory": {
     "title": "Memory",
@@ -62,7 +64,30 @@
   "steps": {
     "welcome": "Welcome",
     "auth": "Auth",
+    "devtools": "Dev Tools",
     "memory": "Memory",
     "done": "Done"
+  },
+  "devtools": {
+    "title": "Developer Tools",
+    "description": "Choose your preferred IDE and terminal for working with Auto Claude worktrees",
+    "detecting": "Detecting installed tools...",
+    "detectAgain": "Detect Again",
+    "whyConfigure": "Why configure these?",
+    "whyConfigureDescription": "When Auto Claude builds features in isolated worktrees, you can open them directly in your preferred IDE or terminal to test and review changes.",
+    "ide": {
+      "label": "Preferred IDE",
+      "description": "Auto Claude will open worktrees in this editor",
+      "customPath": "Custom IDE Path"
+    },
+    "terminal": {
+      "label": "Preferred Terminal",
+      "description": "Auto Claude will open terminal sessions here",
+      "customPath": "Custom Terminal Path"
+    },
+    "detectedSummary": "Detected on your system:",
+    "noToolsDetected": "No additional tools detected (VS Code and system terminal will be used)",
+    "custom": "Custom...",
+    "saveAndContinue": "Save & Continue"
   }
 }

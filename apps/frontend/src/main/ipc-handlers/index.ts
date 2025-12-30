@@ -28,8 +28,12 @@ import { registerChangelogHandlers } from './changelog-handlers';
 import { registerInsightsHandlers } from './insights-handlers';
 import { registerMemoryHandlers } from './memory-handlers';
 import { registerAppUpdateHandlers } from './app-update-handlers';
+<<<<<<< HEAD
 import { registerUnityHandlers } from './unity-handlers';
 import { registerCSharpLspHandlers } from './csharp-lsp-handlers';
+=======
+import { registerDebugHandlers } from './debug-handlers';
+>>>>>>> AndyMik90/develop
 import { notificationService } from '../notification-service';
 
 /**
@@ -100,6 +104,7 @@ export function setupIpcHandlers(
   // App auto-update handlers
   registerAppUpdateHandlers();
 
+<<<<<<< HEAD
   // Unity handlers
   registerUnityHandlers();
 
@@ -108,6 +113,10 @@ export function setupIpcHandlers(
   if (mainWindow) {
     registerCSharpLspHandlers(mainWindow);
   }
+=======
+  // Debug handlers (logs, debug info, etc.)
+  registerDebugHandlers();
+>>>>>>> AndyMik90/develop
 
   console.warn('[IPC] All handler modules registered successfully');
 }
@@ -131,6 +140,10 @@ export {
   registerInsightsHandlers,
   registerMemoryHandlers,
   registerAppUpdateHandlers,
+<<<<<<< HEAD
   registerUnityHandlers,
   registerCSharpLspHandlers
+=======
+  registerDebugHandlers
+>>>>>>> AndyMik90/develop
 };

@@ -374,7 +374,6 @@ export const IPC_CHANNELS = {
   // Release events (main -> renderer)
   RELEASE_PROGRESS: 'release:progress',
 
-<<<<<<< HEAD
   // Unity operations
   UNITY_DETECT_PROJECT: 'unity:detectProject',
   UNITY_UPDATE_PROJECT_VERSION: 'unity:updateProjectVersion',
@@ -438,13 +437,12 @@ export const IPC_CHANNELS = {
   // C# LSP events (main -> renderer)
   CSHARP_LSP_PUBLISH_DIAGNOSTICS: 'csharpLsp:publishDiagnostics',
   CSHARP_LSP_LOG: 'csharpLsp:log',
-  CSHARP_LSP_PROGRESS: 'csharpLsp:progress'
-=======
+  CSHARP_LSP_PROGRESS: 'csharpLsp:progress',
+
   // Debug operations
   DEBUG_GET_INFO: 'debug:getInfo',
   DEBUG_OPEN_LOGS_FOLDER: 'debug:openLogsFolder',
   DEBUG_COPY_DEBUG_INFO: 'debug:copyDebugInfo',
   DEBUG_GET_RECENT_ERRORS: 'debug:getRecentErrors',
   DEBUG_LIST_LOG_FILES: 'debug:listLogFiles'
->>>>>>> AndyMik90/develop
 } as const;

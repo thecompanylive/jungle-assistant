@@ -15,12 +15,9 @@
     "githubPRs": "PRs GitHub",
     "gitlabIssues": "Issues GitLab",
     "worktrees": "Worktrees",
-<<<<<<< HEAD
     "codeEditor": "Éditeur de code",
-    "unity": "Unity"
-=======
+    "unity": "Unity",
     "agentTools": "Aperçu MCP"
->>>>>>> AndyMik90/develop
   },
   "actions": {
     "settings": "Paramètres",

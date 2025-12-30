@@ -18,12 +18,9 @@ import {
   Sparkles,
   GitBranch,
   HelpCircle,
-<<<<<<< HEAD
   Code2,
-  Box
-=======
+  Box,
   Wrench
->>>>>>> AndyMik90/develop
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { ScrollArea } from './ui/scroll-area';
@@ -54,7 +51,6 @@ import { GitSetupModal } from './GitSetupModal';
 import { RateLimitIndicator } from './RateLimitIndicator';
 import type { Project, AutoBuildVersionInfo, GitStatus } from '../../shared/types';
 
-<<<<<<< HEAD
 export type SidebarView =
     | 'kanban'
     | 'terminals'
@@ -62,15 +58,13 @@ export type SidebarView =
     | 'context'
     | 'ideation'
     | 'github-issues'
+    | 'github-prs'
     | 'changelog'
     | 'insights'
     | 'worktrees'
     | 'agent-tools'
     | 'code-editor'
     | 'unity';
-=======
-export type SidebarView = 'kanban' | 'terminals' | 'roadmap' | 'context' | 'ideation' | 'github-issues' | 'github-prs' | 'changelog' | 'insights' | 'worktrees' | 'agent-tools';
->>>>>>> AndyMik90/develop
 
 interface SidebarProps {
   onSettingsClick: () => void;
@@ -100,15 +94,10 @@ const projectNavItems: NavItem[] = [
 
 const toolsNavItems: NavItem[] = [
   { id: 'github-issues', labelKey: 'navigation:items.githubIssues', icon: Github, shortcut: 'G' },
-<<<<<<< HEAD
-  { id: 'worktrees', labelKey: 'navigation:items.worktrees', icon: GitBranch, shortcut: 'W' },
-  // Added from HEAD (jungle-assistant/develop)
-  { id: 'unity', labelKey: 'navigation:items.unity', icon: Box, shortcut: 'U' }
-=======
   { id: 'github-prs', labelKey: 'navigation:items.githubPRs', icon: GitPullRequest, shortcut: 'P' },
   { id: 'worktrees', labelKey: 'navigation:items.worktrees', icon: GitBranch, shortcut: 'W' },
-  { id: 'agent-tools', labelKey: 'navigation:items.agentTools', icon: Wrench, shortcut: 'M' }
->>>>>>> AndyMik90/develop
+  { id: 'agent-tools', labelKey: 'navigation:items.agentTools', icon: Wrench, shortcut: 'M' },
+  { id: 'unity', labelKey: 'navigation:items.unity', icon: Box, shortcut: 'U' }
 ];
 
 export function Sidebar({
@@ -433,39 +422,12 @@ export function Sidebar({
           </DialogContent>
         </Dialog>
 
-<<<<<<< HEAD
-        {/* Update Jungle Assistant Dialog - Deprecated, updateAvailable is always false now */}
-        <Dialog open={showUpdateDialog} onOpenChange={setShowUpdateDialog}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
-                <RefreshCw className="h-5 w-5" />
-                {t('dialogs:update.title')}
-              </DialogTitle>
-              <DialogDescription>{t('dialogs:update.projectInitialized')}</DialogDescription>
-            </DialogHeader>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setShowUpdateDialog(false)}>
-                {t('common:buttons.close')}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-
-        {/* Add Project Modal */}
-        <AddProjectModal
-            open={showAddProjectModal}
-            onOpenChange={setShowAddProjectModal}
-            onProjectAdded={handleProjectAdded}
-        />
-=======
       {/* Add Project Modal */}
       <AddProjectModal
         open={showAddProjectModal}
         onOpenChange={setShowAddProjectModal}
         onProjectAdded={handleProjectAdded}
       />
->>>>>>> AndyMik90/develop
 
         {/* Git Setup Modal */}
         <GitSetupModal

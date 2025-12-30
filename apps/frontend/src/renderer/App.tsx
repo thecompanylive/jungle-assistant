@@ -44,12 +44,9 @@ import { GitHubIssues } from './components/GitHubIssues';
 import { GitHubPRs } from './components/github-prs';
 import { Changelog } from './components/Changelog';
 import { Worktrees } from './components/Worktrees';
-<<<<<<< HEAD
 import { Unity } from './components/Unity';
 import { CodeEditor } from './components/CodeEditor';
-=======
 import { AgentTools } from './components/AgentTools';
->>>>>>> AndyMik90/develop
 import { WelcomeScreen } from './components/WelcomeScreen';
 import { RateLimitModal } from './components/RateLimitModal';
 import { SDKRateLimitModal } from './components/SDKRateLimitModal';
@@ -725,26 +722,13 @@ export function App() {
                 {activeView === 'worktrees' && (activeProjectId || selectedProjectId) && (
                   <Worktrees projectId={activeProjectId || selectedProjectId!} />
                 )}
-<<<<<<< HEAD
                 {activeView === 'unity' && (activeProjectId || selectedProjectId) && (
                   <Unity projectId={activeProjectId || selectedProjectId!} />
                 )}
                 {activeView === 'code-editor' && (activeProjectId || selectedProjectId) && (
                   <CodeEditor projectId={activeProjectId || selectedProjectId!} />
                 )}
-                {activeView === 'agent-tools' && (
-                  <div className="flex h-full items-center justify-center">
-                    <div className="text-center">
-                      <h2 className="text-lg font-semibold text-foreground">Agent Tools</h2>
-                      <p className="mt-2 text-sm text-muted-foreground">
-                        Configure and manage agent tools - Coming soon
-                      </p>
-                    </div>
-                  </div>
-                )}
-=======
                 {activeView === 'agent-tools' && <AgentTools />}
->>>>>>> AndyMik90/develop
               </>
             ) : (
               <WelcomeScreen

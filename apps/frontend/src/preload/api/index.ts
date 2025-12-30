@@ -7,13 +7,10 @@ import { AgentAPI, createAgentAPI } from './agent-api';
 import { IdeationAPI, createIdeationAPI } from './modules/ideation-api';
 import { InsightsAPI, createInsightsAPI } from './modules/insights-api';
 import { AppUpdateAPI, createAppUpdateAPI } from './app-update-api';
-<<<<<<< HEAD
 import { UnityAPI, createUnityAPI } from './unity-api';
 import { CSharpLspAPI, createCSharpLspAPI } from './csharp-lsp-api';
-=======
 import { GitHubAPI, createGitHubAPI } from './modules/github-api';
 import { DebugAPI, createDebugAPI } from './modules/debug-api';
->>>>>>> AndyMik90/develop
 
 export interface ElectronAPI extends
   ProjectAPI,
@@ -25,14 +22,11 @@ export interface ElectronAPI extends
   IdeationAPI,
   InsightsAPI,
   AppUpdateAPI,
-<<<<<<< HEAD
   UnityAPI,
-  CSharpLspAPI {}
-=======
+  CSharpLspAPI,
   DebugAPI {
   github: GitHubAPI;
 }
->>>>>>> AndyMik90/develop
 
 export const createElectronAPI = (): ElectronAPI => ({
   ...createProjectAPI(),
@@ -44,13 +38,10 @@ export const createElectronAPI = (): ElectronAPI => ({
   ...createIdeationAPI(),
   ...createInsightsAPI(),
   ...createAppUpdateAPI(),
-<<<<<<< HEAD
   ...createUnityAPI(),
-  ...createCSharpLspAPI()
-=======
+  ...createCSharpLspAPI(),
   ...createDebugAPI(),
   github: createGitHubAPI()
->>>>>>> AndyMik90/develop
 });
 
 // Export individual API creators for potential use in tests or specialized contexts
@@ -64,13 +55,10 @@ export {
   createIdeationAPI,
   createInsightsAPI,
   createAppUpdateAPI,
-<<<<<<< HEAD
   createUnityAPI,
-  createCSharpLspAPI
-=======
+  createCSharpLspAPI,
   createGitHubAPI,
   createDebugAPI
->>>>>>> AndyMik90/develop
 };
 
 export type {
@@ -83,11 +71,8 @@ export type {
   IdeationAPI,
   InsightsAPI,
   AppUpdateAPI,
-<<<<<<< HEAD
   UnityAPI,
-  CSharpLspAPI
-=======
+  CSharpLspAPI,
   GitHubAPI,
   DebugAPI
->>>>>>> AndyMik90/develop
 };

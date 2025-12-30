@@ -113,7 +113,6 @@ const browserMockAPI: ElectronAPI = {
   // Infrastructure & Docker Operations
   ...infrastructureMock,
 
-<<<<<<< HEAD
   // Unity Operations
   ...unityMock,
 
@@ -121,8 +120,8 @@ const browserMockAPI: ElectronAPI = {
   ...fileMock,
 
   // C# LSP Operations
-  ...csharpLspMock
-=======
+  ...csharpLspMock,
+
   // GitHub API
   github: {
     getGitHubRepositories: async () => ({ success: true, data: [] }),
@@ -200,7 +199,6 @@ const browserMockAPI: ElectronAPI = {
   copyDebugInfo: async () => ({ success: false, error: 'Not available in browser mode' }),
   getRecentErrors: async () => [],
   listLogFiles: async () => []
->>>>>>> AndyMik90/develop
 };
 
 /**

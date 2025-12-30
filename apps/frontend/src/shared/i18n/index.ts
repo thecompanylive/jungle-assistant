@@ -9,11 +9,8 @@ import enTasks from './locales/en/tasks.json';
 import enWelcome from './locales/en/welcome.json';
 import enOnboarding from './locales/en/onboarding.json';
 import enDialogs from './locales/en/dialogs.json';
-<<<<<<< HEAD
 import enUnity from './locales/en/unity.json';
-=======
 import enTaskReview from './locales/en/taskReview.json';
->>>>>>> AndyMik90/develop
 
 // Import French translation resources
 import frCommon from './locales/fr/common.json';
@@ -23,11 +20,8 @@ import frTasks from './locales/fr/tasks.json';
 import frWelcome from './locales/fr/welcome.json';
 import frOnboarding from './locales/fr/onboarding.json';
 import frDialogs from './locales/fr/dialogs.json';
-<<<<<<< HEAD
 import frUnity from './locales/fr/unity.json';
-=======
 import frTaskReview from './locales/fr/taskReview.json';
->>>>>>> AndyMik90/develop
 
 export const defaultNS = 'common';
 
@@ -40,11 +34,8 @@ export const resources = {
     welcome: enWelcome,
     onboarding: enOnboarding,
     dialogs: enDialogs,
-<<<<<<< HEAD
-    unity: enUnity
-=======
+    unity: enUnity,
     taskReview: enTaskReview
->>>>>>> AndyMik90/develop
   },
   fr: {
     common: frCommon,
@@ -54,11 +45,8 @@ export const resources = {
     welcome: frWelcome,
     onboarding: frOnboarding,
     dialogs: frDialogs,
-<<<<<<< HEAD
-    unity: frUnity
-=======
+    unity: frUnity,
     taskReview: frTaskReview
->>>>>>> AndyMik90/develop
   }
 } as const;
 
@@ -69,11 +57,7 @@ i18n
     lng: 'en', // Default language (will be overridden by settings)
     fallbackLng: 'en',
     defaultNS,
-<<<<<<< HEAD
-    ns: ['common', 'navigation', 'settings', 'tasks', 'welcome', 'onboarding', 'dialogs', 'unity'],
-=======
-    ns: ['common', 'navigation', 'settings', 'tasks', 'welcome', 'onboarding', 'dialogs', 'taskReview'],
->>>>>>> AndyMik90/develop
+    ns: ['common', 'navigation', 'settings', 'tasks', 'welcome', 'onboarding', 'dialogs', 'unity', 'taskReview'],
     interpolation: {
       escapeValue: false // React already escapes values
     },

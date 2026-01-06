@@ -54,24 +54,22 @@ import { RateLimitIndicator } from './RateLimitIndicator';
 import { ClaudeCodeStatusBadge } from './ClaudeCodeStatusBadge';
 import type { Project, AutoBuildVersionInfo, GitStatus, ProjectEnvConfig } from '../../shared/types';
 
-<<<<<<< HEAD
 export type SidebarView =
-    | 'kanban'
-    | 'terminals'
-    | 'roadmap'
-    | 'context'
-    | 'ideation'
-    | 'github-issues'
-    | 'github-prs'
-    | 'changelog'
-    | 'insights'
-    | 'worktrees'
-    | 'agent-tools'
-    | 'code-editor'
-    | 'unity';
-=======
-export type SidebarView = 'kanban' | 'terminals' | 'roadmap' | 'context' | 'ideation' | 'github-issues' | 'gitlab-issues' | 'github-prs' | 'gitlab-merge-requests' | 'changelog' | 'insights' | 'worktrees' | 'agent-tools';
->>>>>>> AndyMik90/develop
+  | 'kanban'
+  | 'terminals'
+  | 'roadmap'
+  | 'context'
+  | 'ideation'
+  | 'github-issues'
+  | 'gitlab-issues'
+  | 'github-prs'
+  | 'gitlab-merge-requests'
+  | 'changelog'
+  | 'insights'
+  | 'worktrees'
+  | 'agent-tools'
+  | 'code-editor'
+  | 'unity';
 
 interface SidebarProps {
   onSettingsClick: () => void;
@@ -96,24 +94,15 @@ const baseNavItems: NavItem[] = [
   { id: 'ideation', labelKey: 'navigation:items.ideation', icon: Lightbulb, shortcut: 'I' },
   { id: 'changelog', labelKey: 'navigation:items.changelog', icon: FileText, shortcut: 'L' },
   { id: 'context', labelKey: 'navigation:items.context', icon: BookOpen, shortcut: 'C' },
-<<<<<<< HEAD
-  // Added from HEAD (jungle-assistant/develop)
-  { id: 'code-editor', labelKey: 'navigation:items.codeEditor', icon: Code2, shortcut: 'X' }
-=======
   { id: 'agent-tools', labelKey: 'navigation:items.agentTools', icon: Wrench, shortcut: 'M' },
-  { id: 'worktrees', labelKey: 'navigation:items.worktrees', icon: GitBranch, shortcut: 'W' }
->>>>>>> AndyMik90/develop
+  { id: 'worktrees', labelKey: 'navigation:items.worktrees', icon: GitBranch, shortcut: 'W' },
+  { id: 'code-editor', labelKey: 'navigation:items.codeEditor', icon: Code2, shortcut: 'X' },
+  { id: 'unity', labelKey: 'navigation:items.unity', icon: Box, shortcut: 'U' }
 ];
 
 // GitHub nav items shown when GitHub is enabled
 const githubNavItems: NavItem[] = [
   { id: 'github-issues', labelKey: 'navigation:items.githubIssues', icon: Github, shortcut: 'G' },
-<<<<<<< HEAD
-  { id: 'github-prs', labelKey: 'navigation:items.githubPRs', icon: GitPullRequest, shortcut: 'P' },
-  { id: 'worktrees', labelKey: 'navigation:items.worktrees', icon: GitBranch, shortcut: 'W' },
-  { id: 'agent-tools', labelKey: 'navigation:items.agentTools', icon: Wrench, shortcut: 'M' },
-  { id: 'unity', labelKey: 'navigation:items.unity', icon: Box, shortcut: 'U' }
-=======
   { id: 'github-prs', labelKey: 'navigation:items.githubPRs', icon: GitPullRequest, shortcut: 'P' }
 ];
 
@@ -121,7 +110,6 @@ const githubNavItems: NavItem[] = [
 const gitlabNavItems: NavItem[] = [
   { id: 'gitlab-issues', labelKey: 'navigation:items.gitlabIssues', icon: GitlabIcon, shortcut: 'B' },
   { id: 'gitlab-merge-requests', labelKey: 'navigation:items.gitlabMRs', icon: GitMerge, shortcut: 'R' }
->>>>>>> AndyMik90/develop
 ];
 
 export function Sidebar({
@@ -307,27 +295,6 @@ export function Sidebar({
     const Icon = item.icon;
 
     return (
-<<<<<<< HEAD
-        <button
-            key={item.id}
-            onClick={() => handleNavClick(item.id)}
-            disabled={!selectedProjectId}
-            className={cn(
-                'flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all duration-200',
-                'hover:bg-accent hover:text-accent-foreground',
-                'disabled:pointer-events-none disabled:opacity-50',
-                isActive && 'bg-accent text-accent-foreground'
-            )}
-        >
-          <Icon className="h-4 w-4 shrink-0" />
-          <span className="flex-1 text-left">{t(item.labelKey)}</span>
-          {item.shortcut && (
-              <kbd className="pointer-events-none hidden h-5 select-none items-center gap-1 rounded-md border border-border bg-secondary px-1.5 font-mono text-[10px] font-medium text-muted-foreground sm:flex">
-                {item.shortcut}
-              </kbd>
-          )}
-        </button>
-=======
       <button
         key={item.id}
         onClick={() => handleNavClick(item.id)}
@@ -348,18 +315,15 @@ export function Sidebar({
           </kbd>
         )}
       </button>
->>>>>>> AndyMik90/develop
     );
   };
 
   return (
-<<<<<<< HEAD
       <TooltipProvider>
         <div className="flex h-full w-64 flex-col bg-sidebar border-r border-border">
           {/* Header with drag area - extra top padding for macOS traffic lights */}
           <div className="electron-drag flex h-14 items-center px-4 pt-6">
             <span className="electron-no-drag text-lg font-bold text-primary">Jungle Assistant</span>
-=======
     <TooltipProvider>
       <div className="flex h-full w-64 flex-col bg-sidebar border-r border-border">
         {/* Header with drag area - extra top padding for macOS traffic lights */}
@@ -426,7 +390,6 @@ export function Sidebar({
               </TooltipTrigger>
               <TooltipContent side="top">{t('tooltips.help')}</TooltipContent>
             </Tooltip>
->>>>>>> AndyMik90/develop
           </div>
 
           <Separator className="mt-2" />

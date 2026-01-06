@@ -85,13 +85,9 @@
     "electron-log": "^5.4.3",
     "electron-updater": "^6.6.2",
     "i18next": "^25.7.3",
-<<<<<<< HEAD
-    "lucide-react": "^0.560.0",
-    "monaco-editor": "^0.55.1",
-=======
     "lucide-react": "^0.562.0",
     "minimatch": "^10.1.1",
->>>>>>> AndyMik90/develop
+    "monaco-editor": "^0.55.1",
     "motion": "^12.23.26",
     "proper-lockfile": "^4.1.2",
     "react": "^19.2.3",
@@ -116,11 +112,8 @@
     "@tailwindcss/postcss": "^4.1.17",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.1.0",
-<<<<<<< HEAD
     "@types/diff": "^7.0.2",
-=======
     "@types/minimatch": "^5.1.2",
->>>>>>> AndyMik90/develop
     "@types/node": "^25.0.0",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
@@ -129,13 +122,9 @@
     "@types/xml2js": "^0.4.14",
     "@vitejs/plugin-react": "^5.1.2",
     "autoprefixer": "^10.4.22",
-<<<<<<< HEAD
+    "cross-env": "^10.1.0",
     "diff": "^8.0.2",
     "electron": "^39.2.7",
-=======
-    "cross-env": "^10.1.0",
-    "electron": "39.2.7",
->>>>>>> AndyMik90/develop
     "electron-builder": "^26.0.12",
     "electron-vite": "^5.0.0",
     "eslint": "^9.39.1",

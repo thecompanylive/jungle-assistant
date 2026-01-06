@@ -1,10 +1,6 @@
 import { ipcMain } from 'electron';
-<<<<<<< HEAD
 import { readdirSync, readFileSync, writeFileSync, realpathSync, lstatSync, openSync, fstatSync, closeSync, constants, statSync } from 'fs';
-=======
-import { readdirSync, statSync } from 'fs';
 import { readFile } from 'fs/promises';
->>>>>>> AndyMik90/develop
 import path from 'path';
 import { spawn } from 'child_process';
 import { IPC_CHANNELS } from '../../shared/constants';
@@ -48,10 +44,8 @@ const IGNORED_DIRS = new Set([
  * Register all file-related IPC handlers
  */
 export function registerFileHandlers(): void {
-  // ============================================
-  // File Explorer Operations
-  // ============================================
-
+  // =====================================  // File Explorer Operations
+  // =====================================
   ipcMain.handle(
     IPC_CHANNELS.FILE_EXPLORER_LIST,
     async (_, dirPath: string): Promise<IPCResult<FileNode[]>> => {
@@ -98,11 +92,9 @@ export function registerFileHandlers(): void {
     }
   );
 
-<<<<<<< HEAD
   // ============================================
   // Code Editor Operations (Workspace-scoped)
   // ============================================
-
   // Additional ignored patterns for code editor
   const CODE_EDITOR_IGNORED = new Set([
     ...IGNORED_DIRS,
@@ -368,7 +360,14 @@ export function registerFileHandlers(): void {
           }
         }
 
-=======
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : 'Failed to read file'
+        };
+      }
+    }
+  );
+
   ipcMain.handle(
     IPC_CHANNELS.FILE_EXPLORER_READ,
     async (_, filePath: string): Promise<IPCResult<string>> => {
@@ -390,7 +389,6 @@ export function registerFileHandlers(): void {
         const content = await readFile(safePath, 'utf-8');
         return { success: true, data: content };
       } catch (error) {
->>>>>>> AndyMik90/develop
         return {
           success: false,
           error: error instanceof Error ? error.message : 'Failed to read file'
@@ -398,7 +396,6 @@ export function registerFileHandlers(): void {
       }
     }
   );
-<<<<<<< HEAD
 
   // Write file (workspace-scoped)
   ipcMain.handle(
@@ -535,10 +532,8 @@ export function registerFileHandlers(): void {
     }
   );
 
-  // ============================================
-  // Code Editor Search (using ripgrep)
-  // ============================================
-
+  // =====================================  // Code Editor Search (using ripgrep)
+  // =====================================
   interface SearchMatch {
     line: number;
     column: number;
@@ -788,6 +783,4 @@ export function registerFileHandlers(): void {
       }
     }
   );
-=======
->>>>>>> AndyMik90/develop
 }

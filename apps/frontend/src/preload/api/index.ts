@@ -26,17 +26,13 @@ export interface ElectronAPI extends
   IdeationAPI,
   InsightsAPI,
   AppUpdateAPI,
-<<<<<<< HEAD
   UnityAPI,
   CSharpLspAPI,
-  DebugAPI {
-=======
   GitLabAPI,
   DebugAPI,
   ClaudeCodeAPI,
   McpAPI,
   ProfileAPI {
->>>>>>> AndyMik90/develop
   github: GitHubAPI;
 }
 
@@ -50,12 +46,9 @@ export const createElectronAPI = (): ElectronAPI => ({
   ...createIdeationAPI(),
   ...createInsightsAPI(),
   ...createAppUpdateAPI(),
-<<<<<<< HEAD
   ...createUnityAPI(),
   ...createCSharpLspAPI(),
-=======
   ...createGitLabAPI(),
->>>>>>> AndyMik90/develop
   ...createDebugAPI(),
   ...createClaudeCodeAPI(),
   ...createMcpAPI(),
@@ -74,12 +67,9 @@ export {
   createIdeationAPI,
   createInsightsAPI,
   createAppUpdateAPI,
-<<<<<<< HEAD
   createUnityAPI,
   createCSharpLspAPI,
-=======
   createProfileAPI,
->>>>>>> AndyMik90/develop
   createGitHubAPI,
   createGitLabAPI,
   createDebugAPI,
@@ -97,12 +87,9 @@ export type {
   IdeationAPI,
   InsightsAPI,
   AppUpdateAPI,
-<<<<<<< HEAD
   UnityAPI,
   CSharpLspAPI,
-=======
   ProfileAPI,
->>>>>>> AndyMik90/develop
   GitHubAPI,
   GitLabAPI,
   DebugAPI,

@@ -31,7 +31,7 @@ const isElectron = typeof window !== 'undefined' && window.electronAPI !== undef
  * Create mock electronAPI for browser
  * Aggregates all mock implementations from separate modules
  */
-const browserMockAPI: ElectronAPI = {
+const browserMockAPI = {
   // Project Operations
   ...projectMock,
 
@@ -113,7 +113,6 @@ const browserMockAPI: ElectronAPI = {
   // Infrastructure & Docker Operations
   ...infrastructureMock,
 
-<<<<<<< HEAD
   // Unity Operations
   ...unityMock,
 
@@ -122,7 +121,6 @@ const browserMockAPI: ElectronAPI = {
 
   // C# LSP Operations
   ...csharpLspMock,
-=======
   // API Profile Management (custom Anthropic-compatible endpoints)
   getAPIProfiles: async () => ({
     success: true,
@@ -173,7 +171,6 @@ const browserMockAPI: ElectronAPI = {
       models: []
     }
   }),
->>>>>>> AndyMik90/develop
 
   // GitHub API
   github: {
@@ -312,7 +309,7 @@ const browserMockAPI: ElectronAPI = {
   copyDebugInfo: async () => ({ success: false, error: 'Not available in browser mode' }),
   getRecentErrors: async () => [],
   listLogFiles: async () => []
-};
+} as unknown as ElectronAPI;
 
 /**
  * Initialize browser mock if not running in Electron

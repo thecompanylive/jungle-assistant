@@ -152,14 +152,10 @@ export {
   registerInsightsHandlers,
   registerMemoryHandlers,
   registerAppUpdateHandlers,
-<<<<<<< HEAD
   registerUnityHandlers,
   registerCSharpLspHandlers,
-  registerDebugHandlers
-=======
   registerDebugHandlers,
   registerClaudeCodeHandlers,
   registerMcpHandlers,
   registerProfileHandlers
->>>>>>> AndyMik90/develop
 };

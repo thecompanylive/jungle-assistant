@@ -290,6 +290,7 @@ export function Sidebar({
     onViewChange?.(view);
   };
 
+
   const renderNavItem = (item: NavItem) => {
     const isActive = activeView === item.id;
     const Icon = item.icon;
@@ -319,11 +320,6 @@ export function Sidebar({
   };
 
   return (
-      <TooltipProvider>
-        <div className="flex h-full w-64 flex-col bg-sidebar border-r border-border">
-          {/* Header with drag area - extra top padding for macOS traffic lights */}
-          <div className="electron-drag flex h-14 items-center px-4 pt-6">
-            <span className="electron-no-drag text-lg font-bold text-primary">Jungle Assistant</span>
     <TooltipProvider>
       <div className="flex h-full w-64 flex-col bg-sidebar border-r border-border">
         {/* Header with drag area - extra top padding for macOS traffic lights */}
@@ -333,20 +329,25 @@ export function Sidebar({
 
         <Separator className="mt-2" />
 
-
         <Separator />
 
         {/* Navigation */}
         <ScrollArea className="flex-1">
           <div className="px-3 py-4">
             {/* Project Section */}
-            <div>
+            <div className="mb-6">
               <h3 className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 {t('sections.project')}
               </h3>
-              <nav className="space-y-1">
-                {visibleNavItems.map(renderNavItem)}
-              </nav>
+              <nav className="space-y-1">{projectNavItems.map(renderNavItem)}</nav>
+            </div>
+
+            {/* Tools Section */}
+            <div>
+              <h3 className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                {t('sections.tools')}
+              </h3>
+              <nav className="space-y-1">{toolsNavItems.map(renderNavItem)}</nav>
             </div>
           </div>
         </ScrollArea>
@@ -392,150 +393,86 @@ export function Sidebar({
             </Tooltip>
           </div>
 
-          <Separator className="mt-2" />
+          {/* New Task button */}
+          <Button
+            className="w-full"
+            onClick={onNewTaskClick}
+            disabled={!selectedProjectId || !selectedProject?.autoBuildPath}
+          >
+            <Plus className="mr-2 h-4 w-4" />
+            {t('actions.newTask')}
+          </Button>
+          {selectedProject && !selectedProject.autoBuildPath && (
+            <p className="mt-2 text-xs text-muted-foreground text-center">
+              {t('messages.initializeToCreateTasks')}
+            </p>
+          )}
+        </div>
+      </div>
 
-          <Separator />
-
-          {/* Navigation */}
-          <ScrollArea className="flex-1">
-            <div className="px-3 py-4">
-              {/* Project Section */}
-              <div className="mb-6">
-                <h3 className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  {t('sections.project')}
-                </h3>
-                <nav className="space-y-1">{projectNavItems.map(renderNavItem)}</nav>
-              </div>
-
-              {/* Tools Section */}
-              <div>
-                <h3 className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  {t('sections.tools')}
-                </h3>
-                <nav className="space-y-1">{toolsNavItems.map(renderNavItem)}</nav>
-              </div>
+      {/* Initialize Jungle Assistant Dialog */}
+      <Dialog
+        open={showInitDialog}
+        onOpenChange={(open) => {
+          // Only allow closing if user manually closes (not during initialization)
+          if (!open && !isInitializing) {
+            handleSkipInit();
+          }
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Download className="h-5 w-5" />
+              {t('dialogs:initialize.title')}
+            </DialogTitle>
+            <DialogDescription>{t('dialogs:initialize.description')}</DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <div className="rounded-lg bg-muted p-4 text-sm">
+              <p className="font-medium mb-2">{t('dialogs:initialize.willDo')}</p>
+              <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                <li>{t('dialogs:initialize.createFolder')}</li>
+                <li>{t('dialogs:initialize.copyFramework')}</li>
+                <li>{t('dialogs:initialize.setupSpecs')}</li>
+              </ul>
             </div>
-          </ScrollArea>
-
-          <Separator />
-
-          {/* Rate Limit Indicator - shows when Claude is rate limited */}
-          <RateLimitIndicator />
-
-          {/* Bottom section with Settings, Help, and New Task */}
-          <div className="p-4 space-y-3">
-            {/* Settings and Help row */}
-            <div className="flex items-center gap-2">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                      variant="ghost"
-                      size="sm"
-                      className="flex-1 justify-start gap-2"
-                      onClick={onSettingsClick}
-                  >
-                    <Settings className="h-4 w-4" />
-                    {t('actions.settings')}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="top">{t('tooltips.settings')}</TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() =>
-                          window.open('https://github.com/AndyMik90/Auto-Claude/issues', '_blank')
-                      }
-                  >
-                    <HelpCircle className="h-4 w-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="top">{t('tooltips.help')}</TooltipContent>
-              </Tooltip>
-            </div>
-
-            {/* New Task button */}
-            <Button
-                className="w-full"
-                onClick={onNewTaskClick}
-                disabled={!selectedProjectId || !selectedProject?.autoBuildPath}
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              {t('actions.newTask')}
-            </Button>
-            {selectedProject && !selectedProject.autoBuildPath && (
-                <p className="mt-2 text-xs text-muted-foreground text-center">
-                  {t('messages.initializeToCreateTasks')}
-                </p>
+            {!settings.autoBuildPath && (
+              <div className="mt-4 rounded-lg border border-warning/50 bg-warning/10 p-4 text-sm">
+                <div className="flex items-start gap-2">
+                  <AlertCircle className="h-4 w-4 text-warning mt-0.5 shrink-0" />
+                  <div>
+                    <p className="font-medium text-warning">
+                      {t('dialogs:initialize.sourcePathNotConfigured')}
+                    </p>
+                    <p className="text-muted-foreground mt-1">
+                      {t('dialogs:initialize.sourcePathNotConfiguredDescription')}
+                    </p>
+                  </div>
+                </div>
+              </div>
             )}
           </div>
-        </div>
-
-        {/* Initialize Jungle Assistant Dialog */}
-        <Dialog
-            open={showInitDialog}
-            onOpenChange={(open) => {
-              // Only allow closing if user manually closes (not during initialization)
-              if (!open && !isInitializing) {
-                handleSkipInit();
-              }
-            }}
-        >
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
-                <Download className="h-5 w-5" />
-                {t('dialogs:initialize.title')}
-              </DialogTitle>
-              <DialogDescription>{t('dialogs:initialize.description')}</DialogDescription>
-            </DialogHeader>
-            <div className="py-4">
-              <div className="rounded-lg bg-muted p-4 text-sm">
-                <p className="font-medium mb-2">{t('dialogs:initialize.willDo')}</p>
-                <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                  <li>{t('dialogs:initialize.createFolder')}</li>
-                  <li>{t('dialogs:initialize.copyFramework')}</li>
-                  <li>{t('dialogs:initialize.setupSpecs')}</li>
-                </ul>
-              </div>
-              {!settings.autoBuildPath && (
-                  <div className="mt-4 rounded-lg border border-warning/50 bg-warning/10 p-4 text-sm">
-                    <div className="flex items-start gap-2">
-                      <AlertCircle className="h-4 w-4 text-warning mt-0.5 shrink-0" />
-                      <div>
-                        <p className="font-medium text-warning">
-                          {t('dialogs:initialize.sourcePathNotConfigured')}
-                        </p>
-                        <p className="text-muted-foreground mt-1">
-                          {t('dialogs:initialize.sourcePathNotConfiguredDescription')}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={handleSkipInit} disabled={isInitializing}>
+              {t('common:buttons.skip')}
+            </Button>
+            <Button onClick={handleInitialize} disabled={isInitializing || !settings.autoBuildPath}>
+              {isInitializing ? (
+                <>
+                  <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                  {t('common:labels.initializing')}
+                </>
+              ) : (
+                <>
+                  <Download className="mr-2 h-4 w-4" />
+                  {t('common:buttons.initialize')}
+                </>
               )}
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={handleSkipInit} disabled={isInitializing}>
-                {t('common:buttons.skip')}
-              </Button>
-              <Button onClick={handleInitialize} disabled={isInitializing || !settings.autoBuildPath}>
-                {isInitializing ? (
-                    <>
-                      <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                      {t('common:labels.initializing')}
-                    </>
-                ) : (
-                    <>
-                      <Download className="mr-2 h-4 w-4" />
-                      {t('common:buttons.initialize')}
-                    </>
-                )}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Add Project Modal */}
       <AddProjectModal
@@ -544,14 +481,14 @@ export function Sidebar({
         onProjectAdded={handleProjectAdded}
       />
 
-        {/* Git Setup Modal */}
-        <GitSetupModal
-            open={showGitSetupModal}
-            onOpenChange={setShowGitSetupModal}
-            project={selectedProject || null}
-            gitStatus={gitStatus}
-            onGitInitialized={handleGitInitialized}
-        />
-      </TooltipProvider>
+      {/* Git Setup Modal */}
+      <GitSetupModal
+        open={showGitSetupModal}
+        onOpenChange={setShowGitSetupModal}
+        project={selectedProject || null}
+        gitStatus={gitStatus}
+        onGitInitialized={handleGitInitialized}
+      />
+    </TooltipProvider>
   );
 }

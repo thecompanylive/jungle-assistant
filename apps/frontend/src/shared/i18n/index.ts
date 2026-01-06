@@ -9,8 +9,13 @@ import enTasks from './locales/en/tasks.json';
 import enWelcome from './locales/en/welcome.json';
 import enOnboarding from './locales/en/onboarding.json';
 import enDialogs from './locales/en/dialogs.json';
+<<<<<<< HEAD
 import enUnity from './locales/en/unity.json';
+=======
+import enGitlab from './locales/en/gitlab.json';
+>>>>>>> AndyMik90/develop
 import enTaskReview from './locales/en/taskReview.json';
+import enTerminal from './locales/en/terminal.json';
 
 // Import French translation resources
 import frCommon from './locales/fr/common.json';
@@ -20,8 +25,13 @@ import frTasks from './locales/fr/tasks.json';
 import frWelcome from './locales/fr/welcome.json';
 import frOnboarding from './locales/fr/onboarding.json';
 import frDialogs from './locales/fr/dialogs.json';
+<<<<<<< HEAD
 import frUnity from './locales/fr/unity.json';
+=======
+import frGitlab from './locales/fr/gitlab.json';
+>>>>>>> AndyMik90/develop
 import frTaskReview from './locales/fr/taskReview.json';
+import frTerminal from './locales/fr/terminal.json';
 
 export const defaultNS = 'common';
 
@@ -34,8 +44,14 @@ export const resources = {
     welcome: enWelcome,
     onboarding: enOnboarding,
     dialogs: enDialogs,
+<<<<<<< HEAD
     unity: enUnity,
     taskReview: enTaskReview
+=======
+    gitlab: enGitlab,
+    taskReview: enTaskReview,
+    terminal: enTerminal
+>>>>>>> AndyMik90/develop
   },
   fr: {
     common: frCommon,
@@ -45,8 +61,14 @@ export const resources = {
     welcome: frWelcome,
     onboarding: frOnboarding,
     dialogs: frDialogs,
+<<<<<<< HEAD
     unity: frUnity,
     taskReview: frTaskReview
+=======
+    gitlab: frGitlab,
+    taskReview: frTaskReview,
+    terminal: frTerminal
+>>>>>>> AndyMik90/develop
   }
 } as const;
 
@@ -57,7 +79,11 @@ i18n
     lng: 'en', // Default language (will be overridden by settings)
     fallbackLng: 'en',
     defaultNS,
+<<<<<<< HEAD
     ns: ['common', 'navigation', 'settings', 'tasks', 'welcome', 'onboarding', 'dialogs', 'unity', 'taskReview'],
+=======
+    ns: ['common', 'navigation', 'settings', 'tasks', 'welcome', 'onboarding', 'dialogs', 'gitlab', 'taskReview', 'terminal'],
+>>>>>>> AndyMik90/develop
     interpolation: {
       escapeValue: false // React already escapes values
     },

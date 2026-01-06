@@ -10,7 +10,11 @@ import { AppUpdateAPI, createAppUpdateAPI } from './app-update-api';
 import { UnityAPI, createUnityAPI } from './unity-api';
 import { CSharpLspAPI, createCSharpLspAPI } from './csharp-lsp-api';
 import { GitHubAPI, createGitHubAPI } from './modules/github-api';
+import { GitLabAPI, createGitLabAPI } from './modules/gitlab-api';
 import { DebugAPI, createDebugAPI } from './modules/debug-api';
+import { ClaudeCodeAPI, createClaudeCodeAPI } from './modules/claude-code-api';
+import { McpAPI, createMcpAPI } from './modules/mcp-api';
+import { ProfileAPI, createProfileAPI } from './profile-api';
 
 export interface ElectronAPI extends
   ProjectAPI,
@@ -22,9 +26,17 @@ export interface ElectronAPI extends
   IdeationAPI,
   InsightsAPI,
   AppUpdateAPI,
+<<<<<<< HEAD
   UnityAPI,
   CSharpLspAPI,
   DebugAPI {
+=======
+  GitLabAPI,
+  DebugAPI,
+  ClaudeCodeAPI,
+  McpAPI,
+  ProfileAPI {
+>>>>>>> AndyMik90/develop
   github: GitHubAPI;
 }
 
@@ -38,9 +50,16 @@ export const createElectronAPI = (): ElectronAPI => ({
   ...createIdeationAPI(),
   ...createInsightsAPI(),
   ...createAppUpdateAPI(),
+<<<<<<< HEAD
   ...createUnityAPI(),
   ...createCSharpLspAPI(),
+=======
+  ...createGitLabAPI(),
+>>>>>>> AndyMik90/develop
   ...createDebugAPI(),
+  ...createClaudeCodeAPI(),
+  ...createMcpAPI(),
+  ...createProfileAPI(),
   github: createGitHubAPI()
 });
 
@@ -55,10 +74,17 @@ export {
   createIdeationAPI,
   createInsightsAPI,
   createAppUpdateAPI,
+<<<<<<< HEAD
   createUnityAPI,
   createCSharpLspAPI,
+=======
+  createProfileAPI,
+>>>>>>> AndyMik90/develop
   createGitHubAPI,
-  createDebugAPI
+  createGitLabAPI,
+  createDebugAPI,
+  createClaudeCodeAPI,
+  createMcpAPI
 };
 
 export type {
@@ -71,8 +97,15 @@ export type {
   IdeationAPI,
   InsightsAPI,
   AppUpdateAPI,
+<<<<<<< HEAD
   UnityAPI,
   CSharpLspAPI,
+=======
+  ProfileAPI,
+>>>>>>> AndyMik90/develop
   GitHubAPI,
-  DebugAPI
+  GitLabAPI,
+  DebugAPI,
+  ClaudeCodeAPI,
+  McpAPI
 };

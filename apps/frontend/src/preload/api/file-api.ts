@@ -28,18 +28,23 @@ interface SearchOptions {
 export interface FileAPI {
   // File Explorer Operations
   listDirectory: (dirPath: string) => Promise<IPCResult<import('../../shared/types').FileNode[]>>;
+<<<<<<< HEAD
 
   // Code Editor Operations
   codeEditorListDir: (workspaceRoot: string, relPath: string) => Promise<IPCResult<CodeEditorFileNode[]>>;
   codeEditorReadFile: (workspaceRoot: string, relPath: string) => Promise<IPCResult<string>>;
   codeEditorWriteFile: (workspaceRoot: string, relPath: string, content: string) => Promise<IPCResult<void>>;
   codeEditorSearchText: (workspaceRoot: string, query: string, options?: SearchOptions) => Promise<IPCResult<SearchResult[]>>;
+=======
+  readFile: (filePath: string) => Promise<IPCResult<string>>;
+>>>>>>> AndyMik90/develop
 }
 
 export const createFileAPI = (): FileAPI => ({
   // File Explorer Operations
   listDirectory: (dirPath: string): Promise<IPCResult<import('../../shared/types').FileNode[]>> =>
     ipcRenderer.invoke(IPC_CHANNELS.FILE_EXPLORER_LIST, dirPath),
+<<<<<<< HEAD
 
   // Code Editor Operations
   codeEditorListDir: (workspaceRoot: string, relPath: string): Promise<IPCResult<CodeEditorFileNode[]>> =>
@@ -50,4 +55,8 @@ export const createFileAPI = (): FileAPI => ({
     ipcRenderer.invoke(IPC_CHANNELS.CODE_EDITOR_WRITE_FILE, workspaceRoot, relPath, content),
   codeEditorSearchText: (workspaceRoot: string, query: string, options?: SearchOptions): Promise<IPCResult<SearchResult[]>> =>
     ipcRenderer.invoke(IPC_CHANNELS.CODE_EDITOR_SEARCH_TEXT, workspaceRoot, query, options)
+=======
+  readFile: (filePath: string): Promise<IPCResult<string>> =>
+    ipcRenderer.invoke(IPC_CHANNELS.FILE_EXPLORER_READ, filePath)
+>>>>>>> AndyMik90/develop
 });

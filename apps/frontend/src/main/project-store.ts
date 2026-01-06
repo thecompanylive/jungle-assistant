@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import type { Project, ProjectSettings, Task, TaskStatus, TaskMetadata, ImplementationPlan, ReviewReason, PlanSubtask } from '../shared/types';
 import { DEFAULT_PROJECT_SETTINGS, AUTO_BUILD_PATHS, getSpecsDir } from '../shared/constants';
 import { getAutoBuildPath, isInitialized } from './project-initializer';
+import { getTaskWorktreeDir } from './worktree-paths';
 
 interface TabState {
   openProjectIds: string[];
@@ -248,17 +249,22 @@ export class ProjectStore {
     const allTasks: Task[] = [];
     const specsBaseDir = getSpecsDir(project.autoBuildPath);
 
-    // 1. Scan main project specs directory
+    // 1. Scan main project specs directory (source of truth for task existence)
     const mainSpecsDir = path.join(project.path, specsBaseDir);
+    const mainSpecIds = new Set<string>();
     console.warn('[ProjectStore] Main specsDir:', mainSpecsDir, 'exists:', existsSync(mainSpecsDir));
     if (existsSync(mainSpecsDir)) {
       const mainTasks = this.loadTasksFromSpecsDir(mainSpecsDir, project.path, 'main', projectId, specsBaseDir);
       allTasks.push(...mainTasks);
+      // Track which specs exist in main project
+      mainTasks.forEach(t => mainSpecIds.add(t.specId));
       console.warn('[ProjectStore] Loaded', mainTasks.length, 'tasks from main project');
     }
 
     // 2. Scan worktree specs directories
-    const worktreesDir = path.join(project.path, '.worktrees');
+    // NOTE FOR MAINTAINERS: Worktree tasks are only included if the spec also exists in main.
+    // This prevents deleted tasks from "coming back" when the worktree isn't cleaned up.
+    const worktreesDir = getTaskWorktreeDir(project.path);
     if (existsSync(worktreesDir)) {
       try {
         const worktrees = readdirSync(worktreesDir, { withFileTypes: true });
@@ -274,8 +280,11 @@ export class ProjectStore {
               projectId,
               specsBaseDir
             );
-            allTasks.push(...worktreeTasks);
-            console.warn('[ProjectStore] Loaded', worktreeTasks.length, 'tasks from worktree:', worktree.name);
+            // Only include worktree tasks if the spec exists in main project
+            const validWorktreeTasks = worktreeTasks.filter(t => mainSpecIds.has(t.specId));
+            allTasks.push(...validWorktreeTasks);
+            const skipped = worktreeTasks.length - validWorktreeTasks.length;
+            console.debug('[ProjectStore] Loaded', validWorktreeTasks.length, 'tasks from worktree:', worktree.name, skipped > 0 ? `(skipped ${skipped} orphaned)` : '');
           }
         }
       } catch (error) {
@@ -337,29 +346,13 @@ export class ProjectStore {
           }
         }
 
-        // Try to read spec file for description
+        // PRIORITY 1: Read description from implementation_plan.json (user's original)
         let description = '';
-        if (existsSync(specFilePath)) {
-          try {
-            const content = readFileSync(specFilePath, 'utf-8');
-            // Extract full Overview section until next heading or end of file
-            // Use \n#{1,6}\s to match valid markdown headings (# to ######) with required space
-            // This avoids truncating at # in code blocks (e.g., Python comments)
-            const overviewMatch = content.match(/## Overview\s*\n+([\s\S]*?)(?=\n#{1,6}\s|$)/);
-            if (overviewMatch) {
-              description = overviewMatch[1].trim();
-            }
-          } catch {
-            // Ignore read errors
-          }
-        }
-
-        // Fallback: read description from implementation_plan.json if not found in spec.md
-        if (!description && plan?.description) {
+        if (plan?.description) {
           description = plan.description;
         }
 
-        // Fallback: read description from requirements.json if still not found
+        // PRIORITY 2: Fallback to requirements.json
         if (!description) {
           const requirementsPath = path.join(specPath, AUTO_BUILD_PATHS.REQUIREMENTS);
           if (existsSync(requirementsPath)) {
@@ -392,6 +385,22 @@ export class ProjectStore {
             } catch {
               // Ignore parse errors
             }
+          }
+        }
+
+        // PRIORITY 3: Final fallback to spec.md Overview (AI-synthesized content)
+        if (!description && existsSync(specFilePath)) {
+          try {
+            const content = readFileSync(specFilePath, 'utf-8');
+            // Extract full Overview section until next heading or end of file
+            // Use \n#{1,6}\s to match valid markdown headings (# to ######) with required space
+            // This avoids truncating at # in code blocks (e.g., Python comments)
+            const overviewMatch = content.match(/## Overview\s*\n+([\s\S]*?)(?=\n#{1,6}\s|$)/);
+            if (overviewMatch) {
+              description = overviewMatch[1].trim();
+            }
+          } catch {
+            // Ignore read errors
           }
         }
 
@@ -554,11 +563,16 @@ export class ProjectStore {
         // planStatus: "review" indicates spec creation is complete and awaiting user approval
         const isPlanReviewStage = (plan as unknown as { planStatus?: string })?.planStatus === 'review';
 
+        // Determine if there is remaining work to do
+        // True if: no subtasks exist yet (planning in progress) OR some subtasks are incomplete
+        // This prevents 'in_progress' from overriding 'human_review' when all work is done
+        const hasRemainingWork = allSubtasks.length === 0 || allSubtasks.some((s) => s.status !== 'completed');
+
         const isStoredStatusValid =
           (storedStatus === calculatedStatus) || // Matches calculated
-          (storedStatus === 'human_review' && calculatedStatus === 'ai_review') || // Human review is more advanced than ai_review
+          (storedStatus === 'human_review' && (calculatedStatus === 'ai_review' || calculatedStatus === 'in_progress')) || // Human review is more advanced than ai_review or in_progress (fixes status loop bug)
           (storedStatus === 'human_review' && isPlanReviewStage) || // Plan review stage (awaiting spec approval)
-          (isActiveProcessStatus && storedStatus === 'in_progress'); // Planning/coding phases should show as in_progress
+          (isActiveProcessStatus && storedStatus === 'in_progress' && hasRemainingWork); // Planning/coding phases should show as in_progress ONLY when there's remaining work
 
         if (isStoredStatusValid) {
           // Preserve reviewReason for human_review status
@@ -634,7 +648,7 @@ export class ProjectStore {
     }
 
     // 2. Check worktrees
-    const worktreesDir = path.join(projectPath, '.worktrees');
+    const worktreesDir = getTaskWorktreeDir(projectPath);
     if (existsSync(worktreesDir)) {
       try {
         const worktrees = readdirSync(worktreesDir, { withFileTypes: true });

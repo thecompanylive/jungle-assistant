@@ -7,6 +7,7 @@
  */
 
 import type { ElectronAPI } from '../../shared/types';
+import type { ProfileFormData, APIProfile, CustomMcpServer } from '../../shared/types';
 import {
   projectMock,
   taskMock,
@@ -131,17 +132,17 @@ const browserMockAPI = {
     }
   }),
 
-  saveAPIProfile: async (profile) => ({
+  saveAPIProfile: async (profile: ProfileFormData) => ({
     success: true,
     data: {
       id: `mock-profile-${Date.now()}`,
       ...profile,
       createdAt: Date.now(),
       updatedAt: Date.now()
-    }
+    } as APIProfile
   }),
 
-  updateAPIProfile: async (profile) => ({
+  updateAPIProfile: async (profile: APIProfile) => ({
     success: true,
     data: {
       ...profile,
@@ -276,7 +277,7 @@ const browserMockAPI = {
   }),
 
   // MCP Server Health Check Operations
-  checkMcpHealth: async (server) => ({
+  checkMcpHealth: async (server: CustomMcpServer) => ({
     success: true,
     data: {
       serverId: server.id,
@@ -285,7 +286,7 @@ const browserMockAPI = {
       checkedAt: new Date().toISOString()
     }
   }),
-  testMcpConnection: async (server) => ({
+  testMcpConnection: async (server: CustomMcpServer) => ({
     success: true,
     data: {
       serverId: server.id,

@@ -170,6 +170,19 @@ export function Sidebar({
     return items;
   }, [envConfig?.githubEnabled, envConfig?.gitlabEnabled]);
 
+  // Split navigation items into project and tools sections
+  const projectNavItems = useMemo(() => {
+    return visibleNavItems.filter((item) =>
+      ['kanban', 'terminals', 'insights', 'roadmap', 'ideation', 'changelog', 'context', 'code-editor'].includes(item.id)
+    );
+  }, [visibleNavItems]);
+
+  const toolsNavItems = useMemo(() => {
+    return visibleNavItems.filter((item) =>
+      ['github-issues', 'github-prs', 'gitlab-issues', 'gitlab-merge-requests', 'worktrees', 'agent-tools', 'unity'].includes(item.id)
+    );
+  }, [visibleNavItems]);
+
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {

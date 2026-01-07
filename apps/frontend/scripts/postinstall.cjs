@@ -98,7 +98,7 @@ function isNodePtyBuilt() {
   try {
     const files = fs.readdirSync(localBuildDir);
     if (files.some((f) => f.endsWith('.node'))) return true;
-  } catch (err) {
+  } catch {
     // Directory doesn't exist or can't be read
   }
 
@@ -107,7 +107,7 @@ function isNodePtyBuilt() {
   try {
     const files = fs.readdirSync(rootBuildDir);
     if (files.some((f) => f.endsWith('.node'))) return true;
-  } catch (err) {
+  } catch {
     // Directory doesn't exist or can't be read
   }
 
@@ -121,7 +121,7 @@ function isNodePtyBuilt() {
   try {
     const files = fs.readdirSync(localLydellDir);
     if (files.some((f) => f.endsWith('.node'))) return true;
-  } catch (err) {
+  } catch {
     // Directory doesn't exist or can't be read
   }
 
@@ -130,7 +130,7 @@ function isNodePtyBuilt() {
   try {
     const files = fs.readdirSync(rootLydellDir);
     if (files.some((f) => f.endsWith('.node'))) return true;
-  } catch (err) {
+  } catch {
     // Directory doesn't exist or can't be read
   }
 

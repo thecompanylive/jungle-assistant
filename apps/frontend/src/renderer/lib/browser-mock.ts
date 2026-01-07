@@ -6,8 +6,8 @@
  * for better code organization and maintainability.
  */
 
-import type { ElectronAPI } from '../../shared/types';
-import type { ProfileFormData, APIProfile, CustomMcpServer } from '../../shared/types';
+import type { ElectronAPI, CustomMcpServer } from '../../shared/types';
+import type { ProfileFormData, APIProfile } from '../../shared/types/profile';
 import {
   projectMock,
   taskMock,

@@ -16,12 +16,8 @@ function fixMonacoEditorPlugin() {
   // Check from frontend directory (where this script is run in CI)
   const pluginPath = path.join(__dirname, '..', '..', '..', 'node_modules', 'vite-plugin-monaco-editor', 'dist', 'lnaguageWork.js');
   
-  if (!fs.existsSync(pluginPath)) {
-    console.log('[fix-monaco-plugin] Plugin file not found, skipping:', pluginPath);
-    return;
-  }
-
   try {
+    // Read file directly - will throw if not found (avoiding TOCTOU race condition)
     let content = fs.readFileSync(pluginPath, 'utf8');
     
     // Add .js extension to worker file paths if not already present
@@ -48,6 +44,11 @@ function fixMonacoEditorPlugin() {
       console.log('[fix-monaco-plugin] ✓ Plugin already has correct paths');
     }
   } catch (err) {
+    // Handle file not found gracefully
+    if (err.code === 'ENOENT') {
+      console.log('[fix-monaco-plugin] Plugin file not found, skipping:', pluginPath);
+      return;
+    }
     console.error('[fix-monaco-plugin] ✗ Failed to fix plugin:', err.message);
     process.exit(1);
   }

@@ -95,16 +95,20 @@ function runElectronRebuild() {
 function isNodePtyBuilt() {
   // Check traditional node-pty build location (local node_modules)
   const localBuildDir = path.join(__dirname, '..', 'node_modules', 'node-pty', 'build', 'Release');
-  if (fs.existsSync(localBuildDir)) {
+  try {
     const files = fs.readdirSync(localBuildDir);
     if (files.some((f) => f.endsWith('.node'))) return true;
+  } catch (err) {
+    // Directory doesn't exist or can't be read
   }
 
   // Check root node_modules (for npm workspaces)
   const rootBuildDir = path.join(__dirname, '..', '..', '..', 'node_modules', 'node-pty', 'build', 'Release');
-  if (fs.existsSync(rootBuildDir)) {
+  try {
     const files = fs.readdirSync(rootBuildDir);
     if (files.some((f) => f.endsWith('.node'))) return true;
+  } catch (err) {
+    // Directory doesn't exist or can't be read
   }
 
   // Check for @lydell/node-pty with platform-specific prebuilts
@@ -114,16 +118,20 @@ function isNodePtyBuilt() {
 
   // Check local node_modules
   const localLydellDir = path.join(__dirname, '..', 'node_modules', platformPkg);
-  if (fs.existsSync(localLydellDir)) {
+  try {
     const files = fs.readdirSync(localLydellDir);
     if (files.some((f) => f.endsWith('.node'))) return true;
+  } catch (err) {
+    // Directory doesn't exist or can't be read
   }
 
   // Check root node_modules (for npm workspaces)
   const rootLydellDir = path.join(__dirname, '..', '..', '..', 'node_modules', platformPkg);
-  if (fs.existsSync(rootLydellDir)) {
+  try {
     const files = fs.readdirSync(rootLydellDir);
     if (files.some((f) => f.endsWith('.node'))) return true;
+  } catch (err) {
+    // Directory doesn't exist or can't be read
   }
 
   return false;
@@ -136,12 +144,8 @@ function isNodePtyBuilt() {
 function fixMonacoEditorPlugin() {
   const pluginPath = path.join(__dirname, '..', '..', '..', 'node_modules', 'vite-plugin-monaco-editor', 'dist', 'lnaguageWork.js');
   
-  if (!fs.existsSync(pluginPath)) {
-    // Plugin not installed or in different location
-    return;
-  }
-
   try {
+    // Read file directly - will throw if not found (avoiding TOCTOU race condition)
     let content = fs.readFileSync(pluginPath, 'utf8');
     
     // Add .js extension to worker file paths if not already present
@@ -166,7 +170,10 @@ function fixMonacoEditorPlugin() {
       console.log('[postinstall] Fixed vite-plugin-monaco-editor worker paths');
     }
   } catch (err) {
-    console.warn('[postinstall] Could not fix monaco-editor plugin:', err.message);
+    // Silently ignore if plugin not found or can't be read
+    if (err.code !== 'ENOENT') {
+      console.warn('[postinstall] Could not fix monaco-editor plugin:', err.message);
+    }
   }
 }
 

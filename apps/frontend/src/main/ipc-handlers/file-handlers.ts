@@ -1,9 +1,36 @@
 import { ipcMain } from 'electron';
 import { readdirSync, readFileSync, writeFileSync, realpathSync, lstatSync, openSync, fstatSync, closeSync, constants, statSync } from 'fs';
+import { readFile } from 'fs/promises';
 import path from 'path';
 import { spawn } from 'child_process';
 import { IPC_CHANNELS } from '../../shared/constants';
 import type { IPCResult, FileNode } from '../../shared/types';
+
+// Maximum file size to read (1MB)
+const MAX_FILE_SIZE = 1024 * 1024;
+
+/**
+ * Validates and normalizes a file path for safe reading.
+ * Returns the normalized path if valid, or an error message.
+ */
+function validatePath(filePath: string): { valid: true; path: string } | { valid: false; error: string } {
+  // Resolve to absolute path (handles .., ., etc.)
+  const resolvedPath = path.resolve(filePath);
+
+  // Must be absolute after resolution
+  if (!path.isAbsolute(resolvedPath)) {
+    return { valid: false, error: 'Path must be absolute' };
+  }
+
+  // After resolution, path should not contain .. segments
+  // This catches edge cases where resolve might not fully normalize
+  const segments = resolvedPath.split(path.sep);
+  if (segments.includes('..')) {
+    return { valid: false, error: 'Invalid path: contains parent directory references' };
+  }
+
+  return { valid: true, path: resolvedPath };
+}
 
 // Directories to ignore when listing
 const IGNORED_DIRS = new Set([
@@ -17,15 +44,18 @@ const IGNORED_DIRS = new Set([
  * Register all file-related IPC handlers
  */
 export function registerFileHandlers(): void {
-  // ============================================
-  // File Explorer Operations
-  // ============================================
-
+  // =====================================  // File Explorer Operations
+  // =====================================
   ipcMain.handle(
     IPC_CHANNELS.FILE_EXPLORER_LIST,
     async (_, dirPath: string): Promise<IPCResult<FileNode[]>> => {
       try {
-        const entries = readdirSync(dirPath, { withFileTypes: true });
+        // Validate and normalize path to prevent directory traversal
+        const validation = validatePath(dirPath);
+        if (!validation.valid) {
+          return { success: false, error: validation.error };
+        }
+        const entries = readdirSync(validation.path, { withFileTypes: true });
 
         // Filter and map entries
         const nodes: FileNode[] = [];
@@ -39,7 +69,7 @@ export function registerFileHandlers(): void {
           if (entry.isDirectory() && IGNORED_DIRS.has(entry.name)) continue;
 
           nodes.push({
-            path: path.join(dirPath, entry.name),
+            path: path.join(validation.path, entry.name),
             name: entry.name,
             isDirectory: entry.isDirectory()
           });
@@ -65,7 +95,6 @@ export function registerFileHandlers(): void {
   // ============================================
   // Code Editor Operations (Workspace-scoped)
   // ============================================
-
   // Additional ignored patterns for code editor
   const CODE_EDITOR_IGNORED = new Set([
     ...IGNORED_DIRS,
@@ -339,6 +368,35 @@ export function registerFileHandlers(): void {
     }
   );
 
+  ipcMain.handle(
+    IPC_CHANNELS.FILE_EXPLORER_READ,
+    async (_, filePath: string): Promise<IPCResult<string>> => {
+      try {
+        // Validate and normalize path
+        const validation = validatePath(filePath);
+        if (!validation.valid) {
+          return { success: false, error: validation.error };
+        }
+        const safePath = validation.path;
+
+        // Check file size before reading
+        const stats = statSync(safePath);
+        if (stats.size > MAX_FILE_SIZE) {
+          return { success: false, error: 'File too large (max 1MB)' };
+        }
+
+        // Use async file read to avoid blocking
+        const content = await readFile(safePath, 'utf-8');
+        return { success: true, data: content };
+      } catch (error) {
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : 'Failed to read file'
+        };
+      }
+    }
+  );
+
   // Write file (workspace-scoped)
   ipcMain.handle(
     IPC_CHANNELS.CODE_EDITOR_WRITE_FILE,
@@ -474,10 +532,8 @@ export function registerFileHandlers(): void {
     }
   );
 
-  // ============================================
-  // Code Editor Search (using ripgrep)
-  // ============================================
-
+  // =====================================  // Code Editor Search (using ripgrep)
+  // =====================================
   interface SearchMatch {
     line: number;
     column: number;

@@ -28,6 +28,7 @@ interface SearchOptions {
 export interface FileAPI {
   // File Explorer Operations
   listDirectory: (dirPath: string) => Promise<IPCResult<import('../../shared/types').FileNode[]>>;
+  readFile: (filePath: string) => Promise<IPCResult<string>>;
 
   // Code Editor Operations
   codeEditorListDir: (workspaceRoot: string, relPath: string) => Promise<IPCResult<CodeEditorFileNode[]>>;
@@ -40,6 +41,8 @@ export const createFileAPI = (): FileAPI => ({
   // File Explorer Operations
   listDirectory: (dirPath: string): Promise<IPCResult<import('../../shared/types').FileNode[]>> =>
     ipcRenderer.invoke(IPC_CHANNELS.FILE_EXPLORER_LIST, dirPath),
+  readFile: (filePath: string): Promise<IPCResult<string>> =>
+    ipcRenderer.invoke(IPC_CHANNELS.FILE_EXPLORER_READ, filePath),
 
   // Code Editor Operations
   codeEditorListDir: (workspaceRoot: string, relPath: string): Promise<IPCResult<CodeEditorFileNode[]>> =>

@@ -43,12 +43,35 @@ To install:
 `;
 
 /**
+ * Get electron version from package.json
+ */
+function getElectronVersion() {
+  const pkgPath = path.join(__dirname, '..', 'package.json');
+  const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
+  const electronVersion = pkg.devDependencies?.electron || pkg.dependencies?.electron;
+  if (!electronVersion) {
+    return null;
+  }
+  // Strip leading ^ or ~ from version
+  return electronVersion.replace(/^[\^~]/, '');
+}
+
+/**
  * Run electron-rebuild
  */
 function runElectronRebuild() {
   return new Promise((resolve, reject) => {
     const npx = isWindows ? 'npx.cmd' : 'npx';
-    const child = spawn(npx, ['electron-rebuild'], {
+    const electronVersion = getElectronVersion();
+    const args = ['electron-rebuild'];
+
+    // Explicitly pass electron version if detected
+    if (electronVersion) {
+      args.push('-v', electronVersion);
+      console.log(`[postinstall] Using Electron version: ${electronVersion}`);
+    }
+
+    const child = spawn(npx, args, {
       stdio: 'inherit',
       shell: isWindows,
       cwd: path.join(__dirname, '..'),
@@ -70,12 +93,81 @@ function runElectronRebuild() {
  * Check if node-pty is already built
  */
 function isNodePtyBuilt() {
-  const buildDir = path.join(__dirname, '..', 'node_modules', 'node-pty', 'build', 'Release');
-  if (!fs.existsSync(buildDir)) return false;
+  // Check traditional node-pty build location (local node_modules)
+  const localBuildDir = path.join(__dirname, '..', 'node_modules', 'node-pty', 'build', 'Release');
+  if (fs.existsSync(localBuildDir)) {
+    const files = fs.readdirSync(localBuildDir);
+    if (files.some((f) => f.endsWith('.node'))) return true;
+  }
 
-  // Check for the main .node file
-  const files = fs.readdirSync(buildDir);
-  return files.some((f) => f.endsWith('.node'));
+  // Check root node_modules (for npm workspaces)
+  const rootBuildDir = path.join(__dirname, '..', '..', '..', 'node_modules', 'node-pty', 'build', 'Release');
+  if (fs.existsSync(rootBuildDir)) {
+    const files = fs.readdirSync(rootBuildDir);
+    if (files.some((f) => f.endsWith('.node'))) return true;
+  }
+
+  // Check for @lydell/node-pty with platform-specific prebuilts
+  const arch = os.arch();
+  const platform = os.platform();
+  const platformPkg = `@lydell/node-pty-${platform}-${arch}`;
+
+  // Check local node_modules
+  const localLydellDir = path.join(__dirname, '..', 'node_modules', platformPkg);
+  if (fs.existsSync(localLydellDir)) {
+    const files = fs.readdirSync(localLydellDir);
+    if (files.some((f) => f.endsWith('.node'))) return true;
+  }
+
+  // Check root node_modules (for npm workspaces)
+  const rootLydellDir = path.join(__dirname, '..', '..', '..', 'node_modules', platformPkg);
+  if (fs.existsSync(rootLydellDir)) {
+    const files = fs.readdirSync(rootLydellDir);
+    if (files.some((f) => f.endsWith('.node'))) return true;
+  }
+
+  return false;
+}
+
+/**
+ * Fix vite-plugin-monaco-editor worker paths
+ * The plugin references worker files without .js extension, but they have .js in monaco-editor
+ */
+function fixMonacoEditorPlugin() {
+  const pluginPath = path.join(__dirname, '..', '..', '..', 'node_modules', 'vite-plugin-monaco-editor', 'dist', 'lnaguageWork.js');
+  
+  if (!fs.existsSync(pluginPath)) {
+    // Plugin not installed or in different location
+    return;
+  }
+
+  try {
+    let content = fs.readFileSync(pluginPath, 'utf8');
+    
+    // Add .js extension to worker file paths if not already present
+    const replacements = [
+      [/'monaco-editor\/esm\/vs\/editor\/editor\.worker'(?!\.js)/g, "'monaco-editor/esm/vs/editor/editor.worker.js'"],
+      [/'monaco-editor\/esm\/vs\/language\/css\/css\.worker'(?!\.js)/g, "'monaco-editor/esm/vs/language/css/css.worker.js'"],
+      [/'monaco-editor\/esm\/vs\/language\/html\/html\.worker'(?!\.js)/g, "'monaco-editor/esm/vs/language/html/html.worker.js'"],
+      [/'monaco-editor\/esm\/vs\/language\/json\/json\.worker'(?!\.js)/g, "'monaco-editor/esm/vs/language/json/json.worker.js'"],
+      [/'monaco-editor\/esm\/vs\/language\/typescript\/ts\.worker'(?!\.js)/g, "'monaco-editor/esm/vs/language/typescript/ts.worker.js'"],
+    ];
+
+    let modified = false;
+    for (const [pattern, replacement] of replacements) {
+      if (pattern.test(content)) {
+        content = content.replace(pattern, replacement);
+        modified = true;
+      }
+    }
+
+    if (modified) {
+      fs.writeFileSync(pluginPath, content, 'utf8');
+      console.log('[postinstall] Fixed vite-plugin-monaco-editor worker paths');
+    }
+  } catch (err) {
+    console.warn('[postinstall] Could not fix monaco-editor plugin:', err.message);
+  }
 }
 
 /**
@@ -83,6 +175,9 @@ function isNodePtyBuilt() {
  */
 async function main() {
   console.log('[postinstall] Setting up native modules for Electron...\n');
+  
+  // Fix monaco-editor plugin
+  fixMonacoEditorPlugin();
 
   // If node-pty is already built (e.g., from a previous successful install), skip
   if (isNodePtyBuilt()) {

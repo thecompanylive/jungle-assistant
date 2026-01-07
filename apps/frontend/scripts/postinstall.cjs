@@ -130,10 +130,54 @@ function isNodePtyBuilt() {
 }
 
 /**
+ * Fix vite-plugin-monaco-editor worker paths
+ * The plugin references worker files without .js extension, but they have .js in monaco-editor
+ */
+function fixMonacoEditorPlugin() {
+  const pluginPath = path.join(__dirname, '..', '..', '..', 'node_modules', 'vite-plugin-monaco-editor', 'dist', 'lnaguageWork.js');
+  
+  if (!fs.existsSync(pluginPath)) {
+    // Plugin not installed or in different location
+    return;
+  }
+
+  try {
+    let content = fs.readFileSync(pluginPath, 'utf8');
+    
+    // Add .js extension to worker file paths if not already present
+    const replacements = [
+      [/'monaco-editor\/esm\/vs\/editor\/editor\.worker'(?!\.js)/g, "'monaco-editor/esm/vs/editor/editor.worker.js'"],
+      [/'monaco-editor\/esm\/vs\/language\/css\/css\.worker'(?!\.js)/g, "'monaco-editor/esm/vs/language/css/css.worker.js'"],
+      [/'monaco-editor\/esm\/vs\/language\/html\/html\.worker'(?!\.js)/g, "'monaco-editor/esm/vs/language/html/html.worker.js'"],
+      [/'monaco-editor\/esm\/vs\/language\/json\/json\.worker'(?!\.js)/g, "'monaco-editor/esm/vs/language/json/json.worker.js'"],
+      [/'monaco-editor\/esm\/vs\/language\/typescript\/ts\.worker'(?!\.js)/g, "'monaco-editor/esm/vs/language/typescript/ts.worker.js'"],
+    ];
+
+    let modified = false;
+    for (const [pattern, replacement] of replacements) {
+      if (pattern.test(content)) {
+        content = content.replace(pattern, replacement);
+        modified = true;
+      }
+    }
+
+    if (modified) {
+      fs.writeFileSync(pluginPath, content, 'utf8');
+      console.log('[postinstall] Fixed vite-plugin-monaco-editor worker paths');
+    }
+  } catch (err) {
+    console.warn('[postinstall] Could not fix monaco-editor plugin:', err.message);
+  }
+}
+
+/**
  * Main postinstall logic
  */
 async function main() {
   console.log('[postinstall] Setting up native modules for Electron...\n');
+  
+  // Fix monaco-editor plugin
+  fixMonacoEditorPlugin();
 
   // If node-pty is already built (e.g., from a previous successful install), skip
   if (isNodePtyBuilt()) {

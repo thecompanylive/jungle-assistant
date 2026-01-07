@@ -4,7 +4,7 @@ import { resolve } from 'path';
 import monacoEditorPluginModule from 'vite-plugin-monaco-editor';
 
 // Handle both CJS and ESM exports
-const monacoEditorPlugin = (monacoEditorPluginModule as any).default || monacoEditorPluginModule;
+const monacoEditorPlugin = (monacoEditorPluginModule as { default?: typeof monacoEditorPluginModule }).default || monacoEditorPluginModule;
 
 export default defineConfig({
   main: {
@@ -51,7 +51,7 @@ export default defineConfig({
       react(),
       monacoEditorPlugin({
         languageWorkers: ['editorWorkerService', 'typescript', 'json', 'html', 'css']
-      }) as any
+      })
     ],
     resolve: {
       alias: {

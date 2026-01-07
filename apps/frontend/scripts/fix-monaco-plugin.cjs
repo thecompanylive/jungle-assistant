@@ -23,7 +23,6 @@ function fixMonacoEditorPlugin() {
 
   try {
     let content = fs.readFileSync(pluginPath, 'utf8');
-    let originalContent = content;
     
     // Add .js extension to worker file paths if not already present
     const replacements = [

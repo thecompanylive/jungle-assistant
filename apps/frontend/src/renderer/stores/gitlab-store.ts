@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-<<<<<<<< HEAD:apps/frontend/src/renderer/stores/gitlab-store.ts
 import type {
   GitLabIssue,
   GitLabSyncStatus,
@@ -11,20 +10,10 @@ interface GitLabState {
   // Data
   issues: GitLabIssue[];
   syncStatus: GitLabSyncStatus | null;
-========
-import type { GitHubIssue } from '../../../shared/types';
-
-export type IssueFilterState = 'open' | 'closed' | 'all';
-
-interface IssuesState {
-  // Data
-  issues: GitHubIssue[];
->>>>>>>> develop2:apps/frontend/src/renderer/stores/github/issues-store.ts
 
   // UI State
   isLoading: boolean;
   error: string | null;
-<<<<<<<< HEAD:apps/frontend/src/renderer/stores/gitlab-store.ts
   selectedIssueIid: number | null;
   filterState: 'opened' | 'closed' | 'all';
 
@@ -43,19 +32,6 @@ interface IssuesState {
   setFilterState: (state: 'opened' | 'closed' | 'all') => void;
   setInvestigationStatus: (status: GitLabInvestigationStatus) => void;
   setInvestigationResult: (result: GitLabInvestigationResult | null) => void;
-========
-  selectedIssueNumber: number | null;
-  filterState: IssueFilterState;
-
-  // Actions
-  setIssues: (issues: GitHubIssue[]) => void;
-  addIssue: (issue: GitHubIssue) => void;
-  updateIssue: (issueNumber: number, updates: Partial<GitHubIssue>) => void;
-  setLoading: (loading: boolean) => void;
-  setError: (error: string | null) => void;
-  selectIssue: (issueNumber: number | null) => void;
-  setFilterState: (state: IssueFilterState) => void;
->>>>>>>> develop2:apps/frontend/src/renderer/stores/github/issues-store.ts
   clearIssues: () => void;
 
   // Selectors
@@ -64,16 +40,12 @@ interface IssuesState {
   getOpenIssuesCount: () => number;
 }
 
-<<<<<<<< HEAD:apps/frontend/src/renderer/stores/gitlab-store.ts
 export const useGitLabStore = create<GitLabState>((set, get) => ({
-========
-export const useIssuesStore = create<IssuesState>((set, get) => ({
->>>>>>>> develop2:apps/frontend/src/renderer/stores/github/issues-store.ts
   // Initial state
   issues: [],
+  syncStatus: null,
   isLoading: false,
   error: null,
-<<<<<<<< HEAD:apps/frontend/src/renderer/stores/gitlab-store.ts
   selectedIssueIid: null,
   filterState: 'opened',
   investigationStatus: {
@@ -82,10 +54,6 @@ export const useIssuesStore = create<IssuesState>((set, get) => ({
     message: ''
   },
   lastInvestigationResult: null,
-========
-  selectedIssueNumber: null,
-  filterState: 'open',
->>>>>>>> develop2:apps/frontend/src/renderer/stores/github/issues-store.ts
 
   // Actions
   setIssues: (issues) => set({ issues, error: null }),
@@ -100,6 +68,8 @@ export const useIssuesStore = create<IssuesState>((set, get) => ({
     )
   })),
 
+  setSyncStatus: (syncStatus) => set({ syncStatus }),
+
   setLoading: (isLoading) => set({ isLoading }),
 
   setError: (error) => set({ error, isLoading: false }),
@@ -108,18 +78,17 @@ export const useIssuesStore = create<IssuesState>((set, get) => ({
 
   setFilterState: (filterState) => set({ filterState }),
 
+  setInvestigationStatus: (investigationStatus) => set({ investigationStatus }),
+
+  setInvestigationResult: (lastInvestigationResult) => set({ lastInvestigationResult }),
+
   clearIssues: () => set({
     issues: [],
-<<<<<<<< HEAD:apps/frontend/src/renderer/stores/gitlab-store.ts
     syncStatus: null,
     selectedIssueIid: null,
     error: null,
     investigationStatus: { phase: 'idle', progress: 0, message: '' },
     lastInvestigationResult: null
-========
-    selectedIssueNumber: null,
-    error: null
->>>>>>>> develop2:apps/frontend/src/renderer/stores/github/issues-store.ts
   }),
 
   // Selectors
@@ -141,13 +110,8 @@ export const useIssuesStore = create<IssuesState>((set, get) => ({
 }));
 
 // Action functions for use outside of React components
-<<<<<<<< HEAD:apps/frontend/src/renderer/stores/gitlab-store.ts
 export async function loadGitLabIssues(projectId: string, state?: 'opened' | 'closed' | 'all'): Promise<void> {
   const store = useGitLabStore.getState();
-========
-export async function loadGitHubIssues(projectId: string, state?: IssueFilterState): Promise<void> {
-  const store = useIssuesStore.getState();
->>>>>>>> develop2:apps/frontend/src/renderer/stores/github/issues-store.ts
   store.setLoading(true);
   store.setError(null);
 
@@ -170,7 +134,6 @@ export async function loadGitHubIssues(projectId: string, state?: IssueFilterSta
   }
 }
 
-<<<<<<<< HEAD:apps/frontend/src/renderer/stores/gitlab-store.ts
 export async function checkGitLabConnection(projectId: string): Promise<GitLabSyncStatus | null> {
   const store = useGitLabStore.getState();
 
@@ -203,17 +166,10 @@ export function investigateGitLabIssue(projectId: string, issueIid: number, sele
 }
 
 export async function importGitLabIssues(
-========
-export async function importGitHubIssues(
->>>>>>>> develop2:apps/frontend/src/renderer/stores/github/issues-store.ts
   projectId: string,
   issueIids: number[]
 ): Promise<boolean> {
-<<<<<<<< HEAD:apps/frontend/src/renderer/stores/gitlab-store.ts
   const store = useGitLabStore.getState();
-========
-  const store = useIssuesStore.getState();
->>>>>>>> develop2:apps/frontend/src/renderer/stores/github/issues-store.ts
   store.setLoading(true);
 
   try {

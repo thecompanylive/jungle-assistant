@@ -68,6 +68,15 @@ vi.mock('../../main/python-env-manager', () => ({
   getConfiguredPythonPath: vi.fn(() => DETECTED_PYTHON_CMD)
 }));
 
+// Mock validatePythonPath to allow test paths (security validation is tested separately)
+vi.mock('../../main/python-detector', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../main/python-detector')>();
+  return {
+    ...actual,
+    validatePythonPath: (path: string) => ({ valid: true, sanitizedPath: path })
+  };
+});
+
 // Auto-claude source path (for getAutoBuildSourcePath to find)
 const AUTO_CLAUDE_SOURCE = path.join(TEST_DIR, 'auto-claude-source');
 

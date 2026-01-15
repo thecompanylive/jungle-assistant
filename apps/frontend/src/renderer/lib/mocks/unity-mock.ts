@@ -1,0 +1,217 @@
+/**
+ * Mock implementation for Unity operations
+ */
+import type { UnityAPI } from '../../../preload/api/unity-api';
+
+export const unityMock: UnityAPI = {
+  // Unity project detection
+  detectUnityProject: async (projectPath: string) => ({
+    success: true,
+    data: {
+      isUnityProject: false,
+      projectPath
+    }
+  }),
+
+  updateUnityProjectVersion: async () => ({
+    success: true,
+    data: undefined
+  }),
+
+  // Unity Editor discovery
+  discoverUnityEditors: async () => ({
+    success: true,
+    data: { editors: [] }
+  }),
+
+  autoDetectUnityHub: async () => ({
+    success: true,
+    data: { path: null }
+  }),
+
+  autoDetectUnityEditorsFolder: async () => ({
+    success: true,
+    data: { path: null }
+  }),
+
+  scanUnityEditorsFolder: async () => ({
+    success: true,
+    data: { editors: [] }
+  }),
+
+  // Unity settings
+  getUnitySettings: async () => ({
+    success: true,
+    data: {}
+  }),
+
+  saveUnitySettings: async () => ({
+    success: true,
+    data: undefined
+  }),
+
+  // Unity actions
+  runUnityEditModeTests: async () => ({
+    success: true,
+    data: undefined
+  }),
+
+  runUnityPlayModeTests: async () => ({
+    success: true,
+    data: undefined
+  }),
+
+  runUnityBuild: async () => ({
+    success: true,
+    data: undefined
+  }),
+
+  openUnityProject: async () => ({
+    success: true,
+    data: undefined
+  }),
+
+  cancelUnityRun: async () => ({
+    success: true,
+    data: undefined
+  }),
+
+  rerunUnity: async () => ({
+    success: true,
+    data: undefined
+  }),
+
+  // Unity runs
+  loadUnityRuns: async () => ({
+    success: true,
+    data: { runs: [] }
+  }),
+
+  // Unity profiles
+  getUnityProfiles: async () => ({
+    success: true,
+    data: {
+      profiles: [],
+      activeProfileId: undefined
+    }
+  }),
+
+  createUnityProfile: async (_projectId: string, profile) => ({
+    success: true,
+    data: {
+      id: 'mock-profile-id',
+      ...profile
+    }
+  }),
+
+  updateUnityProfile: async () => ({
+    success: true,
+    data: undefined
+  }),
+
+  deleteUnityProfile: async () => ({
+    success: true,
+    data: undefined
+  }),
+
+  setActiveUnityProfile: async () => ({
+    success: true,
+    data: undefined
+  }),
+
+  // Unity pipelines
+  runUnityPipeline: async () => ({
+    success: true,
+    data: undefined
+  }),
+
+  cancelUnityPipeline: async () => ({
+    success: true,
+    data: undefined
+  }),
+
+  loadUnityPipelines: async () => ({
+    success: true,
+    data: { pipelines: [] }
+  }),
+
+  deleteUnityRun: async () => ({
+    success: true,
+    data: undefined
+  }),
+
+  clearUnityRuns: async () => ({
+    success: true,
+    data: undefined
+  }),
+
+  // Unity Doctor
+  runUnityDoctorChecks: async () => ({
+    success: true,
+    data: {
+      projectPath: '',
+      timestamp: new Date().toISOString(),
+      checks: [],
+      summary: { success: 0, warning: 0, error: 0, info: 0 }
+    }
+  }),
+
+  getDiagnosticsText: async () => ({
+    success: true,
+    data: ''
+  }),
+
+  // Unity Bridge
+  checkBridgeInstalled: async () => ({
+    success: true,
+    data: { installed: false }
+  }),
+
+  installBridge: async () => ({
+    success: true,
+    data: undefined
+  }),
+
+  // Unity Tweaks
+  tweakAddDefine: async () => ({
+    success: true,
+    data: undefined
+  }),
+
+  tweakRemoveDefine: async () => ({
+    success: true,
+    data: undefined
+  }),
+
+  tweakSetBackend: async () => ({
+    success: true,
+    data: undefined
+  }),
+
+  tweakSwitchBuildTarget: async () => ({
+    success: true,
+    data: undefined
+  }),
+
+  // Unity UPM
+  upmListPackages: async () => ({
+    success: true,
+    data: { packages: [] }
+  }),
+
+  upmResolve: async () => ({
+    success: true,
+    data: undefined
+  }),
+
+  // File operations
+  openPath: async (path: string) => {
+    console.warn('[Browser Mock] openPath:', path);
+    return { success: true, data: undefined };
+  },
+
+  copyToClipboard: async (text: string) => {
+    console.warn('[Browser Mock] copyToClipboard:', text);
+    return { success: true, data: undefined };
+  }
+};

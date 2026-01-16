@@ -11,6 +11,8 @@
     "ideation": "Ideation",
     "changelog": "Changelog",
     "context": "Context",
+    "codeEditor": "Code Editor",
+    "unity": "Unity",
     "githubIssues": "GitHub Issues",
     "githubPRs": "GitHub PRs",
     "gitlabIssues": "GitLab Issues",

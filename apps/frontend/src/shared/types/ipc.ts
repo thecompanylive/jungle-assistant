@@ -803,6 +803,71 @@ export interface ElectronAPI {
   // MCP Server health check operations
   checkMcpHealth: (server: CustomMcpServer) => Promise<IPCResult<McpHealthCheckResult>>;
   testMcpConnection: (server: CustomMcpServer) => Promise<IPCResult<McpTestConnectionResult>>;
+
+  // Code Editor operations
+  codeEditorListDir: (workspaceRoot: string, relPath: string) => Promise<IPCResult<FileNode[]>>;
+  codeEditorReadFile: (workspaceRoot: string, relPath: string) => Promise<IPCResult<string>>;
+  codeEditorWriteFile: (workspaceRoot: string, relPath: string, content: string) => Promise<IPCResult>;
+  codeEditorSearchText: (workspaceRoot: string, query: string) => Promise<IPCResult<Array<{ relPath: string; line: number; column: number; preview: string }>>>;
+
+  // Unity operations
+  detectUnityProject: (projectPath: string) => Promise<IPCResult<{ isUnityProject: boolean; version?: string; projectPath: string }>>;
+  updateUnityProjectVersion: (projectId: string, newVersion: string) => Promise<IPCResult>;
+  discoverUnityEditors: () => Promise<IPCResult<Array<{ version: string; path: string }>>>;
+  getUnitySettings: (projectId: string) => Promise<IPCResult<{ unityProjectPath?: string; editorPath?: string; buildExecuteMethod?: string }>>;
+  saveUnitySettings: (projectId: string, settings: { unityProjectPath?: string; editorPath?: string; buildExecuteMethod?: string }) => Promise<IPCResult>;
+  runUnityEditmodeTests: (projectId: string, params: { editorPath: string; testFilter?: string }) => Promise<IPCResult<{ runId: string }>>;
+  runUnityPlaymodeTests: (projectId: string, params: { editorPath: string; buildTarget?: string; testFilter?: string }) => Promise<IPCResult<{ runId: string }>>;
+  runUnityBuild: (projectId: string, params: { editorPath: string; buildTarget?: string; executeMethod?: string }) => Promise<IPCResult<{ runId: string }>>;
+  loadUnityRuns: (projectId: string) => Promise<IPCResult<any[]>>;
+  openPath: (path: string) => Promise<IPCResult<{ opened: boolean }>>;
+  openUnityProject: (projectId: string, editorPath?: string) => Promise<IPCResult<{ opened: boolean }>>;
+  autoDetectUnityHub: () => Promise<IPCResult<{ hubPath?: string }>>;
+  autoDetectUnityEditorsFolder: () => Promise<IPCResult<{ editorsFolder?: string }>>;
+  scanUnityEditorsFolder: (folderPath: string) => Promise<IPCResult<Array<{ version: string; path: string }>>>;
+  cancelUnityRun: (projectId: string, runId: string) => Promise<IPCResult>;
+  rerunUnity: (projectId: string, runId: string) => Promise<IPCResult<{ runId: string }>>;
+  copyToClipboard: (text: string) => Promise<IPCResult>;
+  getUnityProfiles: (projectId: string) => Promise<IPCResult<any[]>>;
+  createUnityProfile: (projectId: string, profile: any) => Promise<IPCResult<any>>;
+  updateUnityProfile: (projectId: string, profileId: string, profile: any) => Promise<IPCResult<any>>;
+  deleteUnityProfile: (projectId: string, profileId: string) => Promise<IPCResult>;
+  setActiveUnityProfile: (projectId: string, profileId: string) => Promise<IPCResult>;
+  runUnityPipeline: (projectId: string, pipelineId: string, params?: any) => Promise<IPCResult<{ pipelineRunId: string }>>;
+  cancelUnityPipeline: (projectId: string, pipelineRunId: string) => Promise<IPCResult>;
+  loadUnityPipelines: (projectId: string) => Promise<IPCResult<any[]>>;
+  deleteUnityRun: (projectId: string, runId: string) => Promise<IPCResult>;
+  clearUnityRuns: (projectId: string) => Promise<IPCResult>;
+  runUnityDoctorChecks: (projectId: string) => Promise<IPCResult<any>>;
+  getDiagnosticsText: (projectId: string) => Promise<IPCResult<string>>;
+  checkUnityBridgeInstalled: (projectId: string) => Promise<IPCResult<{ installed: boolean; path?: string }>>;
+  installUnityBridge: (projectId: string) => Promise<IPCResult<{ installed: boolean; path: string }>>;
+  installBridge: (projectId: string) => Promise<IPCResult>;
+  runUnityTweak: (projectId: string, params: any) => Promise<IPCResult<{ runId: string }>>;
+  tweakAddDefine: (projectId: string, editorPath: string, params: any) => Promise<IPCResult>;
+  tweakRemoveDefine: (projectId: string, editorPath: string, params: any) => Promise<IPCResult>;
+  tweakSetBackend: (projectId: string, editorPath: string, params: any) => Promise<IPCResult>;
+  tweakSwitchBuildTarget: (projectId: string, editorPath: string, params: any) => Promise<IPCResult>;
+  upmResolve: (projectId: string, editorPath: string) => Promise<IPCResult>;
+  upmListPackages: (projectId: string) => Promise<IPCResult<{ packages: any[] }>>;
+
+  // C# LSP operations
+  csharpLspStart: (projectPath: string) => Promise<IPCResult<import('./csharp-lsp').CSharpLspStatusResponse>>;
+  csharpLspStop: (projectPath: string) => Promise<IPCResult>;
+  csharpLspStatus: (projectPath: string) => Promise<IPCResult<import('./csharp-lsp').CSharpLspStatusResponse>>;
+  csharpLspDidOpen: (projectPath: string, relPath: string, content: string, languageId?: string) => Promise<IPCResult>;
+  csharpLspDidChange: (projectPath: string, relPath: string, content: string) => Promise<IPCResult>;
+  csharpLspDidSave: (projectPath: string, relPath: string) => Promise<IPCResult>;
+  csharpLspDidClose: (projectPath: string, relPath: string) => Promise<IPCResult>;
+  csharpLspCompletion: (projectPath: string, relPath: string, line: number, column: number) => Promise<IPCResult<import('./csharp-lsp').CSharpLspCompletionList>>;
+  csharpLspHover: (projectPath: string, relPath: string, line: number, column: number) => Promise<IPCResult<import('./csharp-lsp').CSharpLspHover | null>>;
+  csharpLspDefinition: (projectPath: string, relPath: string, line: number, column: number) => Promise<IPCResult<import('./csharp-lsp').CSharpLspLocation[]>>;
+  csharpLspFormatDocument: (projectPath: string, relPath: string) => Promise<IPCResult<import('./csharp-lsp').CSharpLspTextEdit[]>>;
+
+  // C# LSP event listeners
+  onCSharpLspPublishDiagnostics: (callback: (params: import('./csharp-lsp').CSharpLspPublishDiagnosticsParams) => void) => () => void;
+  onCSharpLspProgress: (callback: (message: string) => void) => () => void;
+  onCSharpLspLog: (callback: (logMessage: import('./csharp-lsp').CSharpLspLogMessage) => void) => () => void;
 }
 
 declare global {

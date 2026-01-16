@@ -71,7 +71,7 @@ export function CodeEditor({ projectId }: CodeEditorProps) {
   const [expandedSearchFiles, setExpandedSearchFiles] = useState<Set<string>>(new Set());
 
   // Recent files state
-  const [recentFiles, setRecentFiles] = useState<string[]>([]);
+  const [recentFiles, setRecentFiles] = useState<Array<{ relPath: string; lastOpenedAt: number }>>([]);
 
   const editorRef = useRef<Monaco.editor.IStandaloneCodeEditor | null>(null);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
@@ -88,7 +88,7 @@ export function CodeEditor({ projectId }: CodeEditorProps) {
   }, [selectedProject?.settings.codeEditorRecentFiles]);
 
   // Save recent files to project settings
-  const saveRecentFiles = useCallback(async (files: string[]) => {
+  const saveRecentFiles = useCallback(async (files: Array<{ relPath: string; lastOpenedAt: number }>) => {
     if (!selectedProject) return;
     await window.electronAPI.updateProjectSettings(projectId, {
       codeEditorRecentFiles: files
@@ -97,12 +97,16 @@ export function CodeEditor({ projectId }: CodeEditorProps) {
 
   // Update recent files when a file is opened
   const addToRecentFiles = useCallback(async (relPath: string) => {
-    let previousRecents: string[] = [];
-    let newRecents: string[] = [];
+    let previousRecents: Array<{ relPath: string; lastOpenedAt: number }> = [];
+    let newRecents: Array<{ relPath: string; lastOpenedAt: number }> = [];
 
     setRecentFiles(prev => {
       previousRecents = prev;
-      newRecents = [relPath, ...prev.filter(f => f !== relPath)].slice(0, 30);
+      const now = Date.now();
+      newRecents = [
+        { relPath, lastOpenedAt: now },
+        ...prev.filter(f => f.relPath !== relPath)
+      ].slice(0, 30);
       return newRecents;
     });
 
@@ -130,7 +134,7 @@ export function CodeEditor({ projectId }: CodeEditorProps) {
       if (result.success && result.data) {
         setFolderState(prev => ({
           ...prev,
-          childrenByDir: new Map(prev.childrenByDir).set(relPath, result.data!)
+          childrenByDir: new Map(prev.childrenByDir).set(relPath, result.data as unknown as FileNode[])
         }));
       } else {
         setFolderState(prev => ({
@@ -388,7 +392,25 @@ export function CodeEditor({ projectId }: CodeEditorProps) {
       const result = await window.electronAPI.codeEditorSearchText(workspaceRoot, searchQuery);
 
       if (result.success && result.data) {
-        setSearchResults(result.data);
+        // Group results by file
+        const groupedResults: SearchResult[] = [];
+        const resultsByFile = new Map<string, SearchMatch[]>();
+
+        for (const match of result.data) {
+          const matches = resultsByFile.get(match.relPath) || [];
+          matches.push({
+            line: match.line,
+            column: match.column,
+            preview: match.preview
+          });
+          resultsByFile.set(match.relPath, matches);
+        }
+
+        for (const [relPath, matches] of resultsByFile) {
+          groupedResults.push({ relPath, matches });
+        }
+
+        setSearchResults(groupedResults);
         setStatus('idle');
       } else {
         setSearchError(result.error || 'Search failed');
@@ -734,22 +756,22 @@ export function CodeEditor({ projectId }: CodeEditorProps) {
                     <span>Recent</span>
                   </div>
                   <div className="space-y-1">
-                    {recentFiles.slice(0, 10).map(relPath => {
-                      const fileName = relPath.split('/').pop() || relPath;
+                    {recentFiles.slice(0, 10).map(recent => {
+                      const fileName = recent.relPath.split('/').pop() || recent.relPath;
                       return (
-                        <Tooltip key={relPath}>
+                        <Tooltip key={recent.relPath}>
                           <TooltipTrigger asChild>
                             <div
                               className={`flex items-center gap-1 px-2 py-1 hover:bg-accent cursor-pointer text-xs rounded truncate ${
-                                activeTab?.relPath === relPath ? 'bg-accent' : ''
+                                activeTab?.relPath === recent.relPath ? 'bg-accent' : ''
                               }`}
-                              onClick={() => openFile(relPath)}
+                              onClick={() => openFile(recent.relPath)}
                             >
                               <File className="h-3 w-3 flex-shrink-0 text-muted-foreground" />
                               <span className="truncate">{fileName}</span>
                             </div>
                           </TooltipTrigger>
-                          <TooltipContent>{relPath}</TooltipContent>
+                          <TooltipContent>{recent.relPath}</TooltipContent>
                         </Tooltip>
                       );
                     })}

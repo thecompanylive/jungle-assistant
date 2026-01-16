@@ -28,7 +28,7 @@ const isElectron = typeof window !== 'undefined' && window.electronAPI !== undef
  * Create mock electronAPI for browser
  * Aggregates all mock implementations from separate modules
  */
-const browserMockAPI: ElectronAPI = {
+const browserMockAPI = {
   // Project Operations
   ...projectMock,
 
@@ -120,7 +120,7 @@ const browserMockAPI: ElectronAPI = {
     }
   }),
 
-  saveAPIProfile: async (profile) => ({
+  saveAPIProfile: async (profile: any) => ({
     success: true,
     data: {
       id: `mock-profile-${Date.now()}`,
@@ -130,7 +130,7 @@ const browserMockAPI: ElectronAPI = {
     }
   }),
 
-  updateAPIProfile: async (profile) => ({
+  updateAPIProfile: async (profile: any) => ({
     success: true,
     data: {
       ...profile,
@@ -294,7 +294,7 @@ const browserMockAPI: ElectronAPI = {
   }),
 
   // MCP Server Health Check Operations
-  checkMcpHealth: async (server) => ({
+  checkMcpHealth: async (server: any) => ({
     success: true,
     data: {
       serverId: server.id,
@@ -303,7 +303,7 @@ const browserMockAPI: ElectronAPI = {
       checkedAt: new Date().toISOString()
     }
   }),
-  testMcpConnection: async (server) => ({
+  testMcpConnection: async (server: any) => ({
     success: true,
     data: {
       serverId: server.id,
@@ -335,7 +335,7 @@ const browserMockAPI: ElectronAPI = {
 export function initBrowserMock(): void {
   if (!isElectron) {
     console.warn('%c[Browser Mock] Initializing mock electronAPI for browser preview', 'color: #f0ad4e; font-weight: bold;');
-    (window as Window & { electronAPI: ElectronAPI }).electronAPI = browserMockAPI;
+    (window as Window & { electronAPI: ElectronAPI }).electronAPI = browserMockAPI as Partial<ElectronAPI> as ElectronAPI;
   }
 }
 

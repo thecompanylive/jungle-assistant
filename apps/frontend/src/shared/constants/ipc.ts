@@ -517,6 +517,70 @@ export const IPC_CHANNELS = {
   MCP_CHECK_HEALTH: 'mcp:checkHealth',           // Quick connectivity check
   MCP_TEST_CONNECTION: 'mcp:testConnection',     // Full MCP protocol test
 
+  // Unity operations
+  UNITY_DETECT_PROJECT: 'unity:detectProject',
+  UNITY_UPDATE_PROJECT_VERSION: 'unity:updateProjectVersion',
+  UNITY_DISCOVER_EDITORS: 'unity:discoverEditors',
+  UNITY_GET_SETTINGS: 'unity:getSettings',
+  UNITY_SAVE_SETTINGS: 'unity:saveSettings',
+  UNITY_RUN_EDITMODE_TESTS: 'unity:runEditmodeTests',
+  UNITY_RUN_PLAYMODE_TESTS: 'unity:runPlaymodeTests',
+  UNITY_RUN_BUILD: 'unity:runBuild',
+  UNITY_LOAD_RUNS: 'unity:loadRuns',
+  UNITY_OPEN_PATH: 'unity:openPath',
+  UNITY_OPEN_PROJECT: 'unity:openProject',
+  UNITY_AUTO_DETECT_HUB: 'unity:autoDetectHub',
+  UNITY_AUTO_DETECT_EDITORS_FOLDER: 'unity:autoDetectEditorsFolder',
+  UNITY_SCAN_EDITORS_FOLDER: 'unity:scanEditorsFolder',
+  UNITY_CANCEL_RUN: 'unity:cancelRun',
+  UNITY_RERUN: 'unity:rerun',
+  UNITY_COPY_TO_CLIPBOARD: 'unity:copyToClipboard',
+  UNITY_GET_PROFILES: 'unity:getProfiles',
+  UNITY_CREATE_PROFILE: 'unity:createProfile',
+  UNITY_UPDATE_PROFILE: 'unity:updateProfile',
+  UNITY_DELETE_PROFILE: 'unity:deleteProfile',
+  UNITY_SET_ACTIVE_PROFILE: 'unity:setActiveProfile',
+  UNITY_RUN_PIPELINE: 'unity:runPipeline',
+  UNITY_CANCEL_PIPELINE: 'unity:cancelPipeline',
+  UNITY_LOAD_PIPELINES: 'unity:loadPipelines',
+  UNITY_DELETE_RUN: 'unity:deleteRun',
+  UNITY_CLEAR_RUNS: 'unity:clearRuns',
+  UNITY_DOCTOR_RUN_CHECKS: 'unity:doctorRunChecks',
+  UNITY_DOCTOR_GET_DIAGNOSTICS_TEXT: 'unity:doctorGetDiagnosticsText',
+  UNITY_BRIDGE_CHECK_INSTALLED: 'unity:bridgeCheckInstalled',
+  UNITY_BRIDGE_INSTALL: 'unity:bridgeInstall',
+  UNITY_TWEAK_RUN: 'unity:tweakRun',
+  UNITY_TWEAK_ADD_DEFINE: 'unity:tweakAddDefine',
+  UNITY_TWEAK_REMOVE_DEFINE: 'unity:tweakRemoveDefine',
+  UNITY_TWEAK_SET_BACKEND: 'unity:tweakSetBackend',
+  UNITY_TWEAK_SWITCH_BUILD_TARGET: 'unity:tweakSwitchBuildTarget',
+  UNITY_UPM_RESOLVE: 'unity:upmResolve',
+  UNITY_UPM_LIST_PACKAGES: 'unity:upmListPackages',
+
+  // Code Editor operations
+  CODE_EDITOR_LIST_DIR: 'codeEditor:listDir',
+  CODE_EDITOR_READ_FILE: 'codeEditor:readFile',
+  CODE_EDITOR_WRITE_FILE: 'codeEditor:writeFile',
+  CODE_EDITOR_SEARCH_TEXT: 'codeEditor:searchText',
+
+  // C# Language Server Protocol (LSP) operations
+  CSHARP_LSP_START: 'csharp-lsp:start',
+  CSHARP_LSP_STOP: 'csharp-lsp:stop',
+  CSHARP_LSP_STATUS: 'csharp-lsp:status',
+  CSHARP_LSP_DID_OPEN: 'csharp-lsp:didOpen',
+  CSHARP_LSP_DID_CHANGE: 'csharp-lsp:didChange',
+  CSHARP_LSP_DID_SAVE: 'csharp-lsp:didSave',
+  CSHARP_LSP_DID_CLOSE: 'csharp-lsp:didClose',
+  CSHARP_LSP_COMPLETION: 'csharp-lsp:completion',
+  CSHARP_LSP_HOVER: 'csharp-lsp:hover',
+  CSHARP_LSP_DEFINITION: 'csharp-lsp:definition',
+  CSHARP_LSP_FORMAT_DOCUMENT: 'csharp-lsp:formatDocument',
+
+  // C# LSP events (main -> renderer)
+  CSHARP_LSP_PUBLISH_DIAGNOSTICS: 'csharp-lsp:publishDiagnostics',
+  CSHARP_LSP_PROGRESS: 'csharp-lsp:progress',
+  CSHARP_LSP_LOG: 'csharp-lsp:log',
+
   // Sentry error reporting
   SENTRY_STATE_CHANGED: 'sentry:state-changed',  // Notify main process when setting changes
   GET_SENTRY_DSN: 'sentry:get-dsn',              // Get DSN from main process (env var)

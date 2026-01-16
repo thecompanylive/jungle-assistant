@@ -26,6 +26,8 @@ export interface ProjectSettings {
   mainBranch?: string;
   /** Include CLAUDE.md instructions in agent system prompt (default: true) */
   useClaudeMd?: boolean;
+  /** Code Editor recent files list */
+  codeEditorRecentFiles?: Array<{ relPath: string; lastOpenedAt: number }>;
 }
 
 export interface NotificationSettings {

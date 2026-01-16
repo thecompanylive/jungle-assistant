@@ -62,8 +62,10 @@ export function useCSharpLsp({ workspaceRoot, monaco, editor }: UseCSharpLspOpti
       triggerCharacters: ['.', ' ', '(', '<'],
       provideCompletionItems: async (model, position) => {
         try {
+          if (!workspaceRoot) return { suggestions: [] };
           const relPath = model.uri.path.replace(/^\//, '');
           const result = await window.electronAPI.csharpLspCompletion(
+            workspaceRoot,
             relPath,
             position.lineNumber - 1, // Monaco is 1-based, LSP is 0-based
             position.column - 1
@@ -111,8 +113,10 @@ export function useCSharpLsp({ workspaceRoot, monaco, editor }: UseCSharpLspOpti
     const hoverProvider = monaco.languages.registerHoverProvider('csharp', {
       provideHover: async (model, position) => {
         try {
+          if (!workspaceRoot) return null;
           const relPath = model.uri.path.replace(/^\//, '');
           const result = await window.electronAPI.csharpLspHover(
+            workspaceRoot,
             relPath,
             position.lineNumber - 1,
             position.column - 1
@@ -165,18 +169,21 @@ export function useCSharpLsp({ workspaceRoot, monaco, editor }: UseCSharpLspOpti
     const definitionProvider = monaco.languages.registerDefinitionProvider('csharp', {
       provideDefinition: async (model, position) => {
         try {
+          if (!workspaceRoot) return null;
           const relPath = model.uri.path.replace(/^\//, '');
           const result = await window.electronAPI.csharpLspDefinition(
+            workspaceRoot,
             relPath,
             position.lineNumber - 1,
             position.column - 1
           );
 
-          if (!result.success || !result.data) {
+          if (!result.success || !result.data || !Array.isArray(result.data) || result.data.length === 0) {
             return null;
           }
 
-          const location = result.data as CSharpLspLocation;
+          const locations = result.data as CSharpLspLocation[];
+          const location = locations[0];
 
           // Convert file:// URI to path
           const targetPath = location.uri.replace(/^file:\/\//, '');
@@ -202,10 +209,11 @@ export function useCSharpLsp({ workspaceRoot, monaco, editor }: UseCSharpLspOpti
     const formattingProvider = monaco.languages.registerDocumentFormattingEditProvider('csharp', {
       provideDocumentFormattingEdits: async (model) => {
         try {
+          if (!workspaceRoot) return [];
           const relPath = model.uri.path.replace(/^\//, '');
           const result = await window.electronAPI.csharpLspFormatDocument(
-            relPath,
-            model.getValue()
+            workspaceRoot,
+            relPath
           );
 
           if (!result.success || !result.data) {
@@ -270,15 +278,15 @@ export function useCSharpLsp({ workspaceRoot, monaco, editor }: UseCSharpLspOpti
 
   // Document lifecycle: didOpen
   const didOpen = useCallback(async (relPath: string, text: string) => {
-    if (!lspStore.isReady()) return;
+    if (!lspStore.isReady() || !workspaceRoot) return;
 
     try {
-      await window.electronAPI.csharpLspDidOpen(relPath, text);
+      await window.electronAPI.csharpLspDidOpen(workspaceRoot, relPath, text, 'csharp');
       documentsRef.current.set(relPath, { relPath, version: 0 });
     } catch (error) {
       console.error('Failed to notify LSP of document open:', error);
     }
-  }, [lspStore.status]);
+  }, [lspStore.status, workspaceRoot]);
 
   // Document lifecycle: didChange (debounced)
   const didChange = useCallback((relPath: string, text: string) => {
@@ -302,29 +310,31 @@ export function useCSharpLsp({ workspaceRoot, monaco, editor }: UseCSharpLspOpti
 
     doc.changeTimeout = setTimeout(async () => {
       try {
-        await window.electronAPI.csharpLspDidChange(relPath, text, newVersion);
+        if (workspaceRoot) {
+          await window.electronAPI.csharpLspDidChange(workspaceRoot, relPath, text);
+        }
       } catch (error) {
         console.error('Failed to notify LSP of document change:', error);
       }
     }, 300);
 
     documentsRef.current.set(relPath, doc);
-  }, [lspStore.status, didOpen]);
+  }, [lspStore.status, didOpen, workspaceRoot]);
 
   // Document lifecycle: didSave
   const didSave = useCallback(async (relPath: string, text?: string) => {
-    if (!lspStore.isReady()) return;
+    if (!lspStore.isReady() || !workspaceRoot) return;
 
     try {
-      await window.electronAPI.csharpLspDidSave(relPath, text);
+      await window.electronAPI.csharpLspDidSave(workspaceRoot, relPath);
     } catch (error) {
       console.error('Failed to notify LSP of document save:', error);
     }
-  }, [lspStore.status]);
+  }, [lspStore.status, workspaceRoot]);
 
   // Document lifecycle: didClose
   const didClose = useCallback(async (relPath: string) => {
-    if (!lspStore.isReady()) return;
+    if (!lspStore.isReady() || !workspaceRoot) return;
 
     const doc = documentsRef.current.get(relPath);
     if (doc?.changeTimeout) {
@@ -334,12 +344,12 @@ export function useCSharpLsp({ workspaceRoot, monaco, editor }: UseCSharpLspOpti
     documentsRef.current.delete(relPath);
 
     try {
-      await window.electronAPI.csharpLspDidClose(relPath);
+      await window.electronAPI.csharpLspDidClose(workspaceRoot, relPath);
       lspStore.clearDiagnostics(relPath);
     } catch (error) {
       console.error('Failed to notify LSP of document close:', error);
     }
-  }, [lspStore.status]);
+  }, [lspStore.status, workspaceRoot]);
 
   // Format document
   const formatDocument = useCallback(async () => {

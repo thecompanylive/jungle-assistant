@@ -1,10 +1,11 @@
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite';
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
-import monacoEditorPluginModule from 'vite-plugin-monaco-editor';
+// Temporarily disable monaco plugin due to path resolution issue with ESM
+// import monacoEditorPluginModule from 'vite-plugin-monaco-editor';
 
 // Handle both CJS and ESM exports
-const monacoEditorPlugin = (monacoEditorPluginModule as any).default || monacoEditorPluginModule;
+// const monacoEditorPlugin = (monacoEditorPluginModule as any).default || monacoEditorPluginModule;
 
 /**
  * Sentry configuration embedded at build time.
@@ -74,9 +75,10 @@ export default defineConfig({
     },
     plugins: [
       react(),
-      monacoEditorPlugin({
-        languageWorkers: ['editorWorkerService', 'typescript', 'json', 'html', 'css']
-      }) as any
+      // Temporarily disabled - monaco plugin has path resolution issues
+      // monacoEditorPlugin({
+      //   languageWorkers: ['editorWorkerService', 'typescript', 'json', 'html', 'css']
+      // }) as any
     ],
     resolve: {
       alias: {

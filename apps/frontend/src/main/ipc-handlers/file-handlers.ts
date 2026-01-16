@@ -171,45 +171,6 @@ export function registerFileHandlers(): void {
     return { valid: true, fullPath };
   }
 
-  /**
-   * Get Monaco language ID from file extension
-   */
-  function getLanguageFromPath(filePath: string): string {
-    const ext = path.extname(filePath).toLowerCase();
-    const languageMap: Record<string, string> = {
-      '.ts': 'typescript',
-      '.tsx': 'typescript',
-      '.js': 'javascript',
-      '.jsx': 'javascript',
-      '.json': 'json',
-      '.html': 'html',
-      '.css': 'css',
-      '.scss': 'scss',
-      '.less': 'less',
-      '.md': 'markdown',
-      '.py': 'python',
-      '.rb': 'ruby',
-      '.go': 'go',
-      '.rs': 'rust',
-      '.java': 'java',
-      '.c': 'c',
-      '.cpp': 'cpp',
-      '.h': 'c',
-      '.hpp': 'cpp',
-      '.cs': 'csharp',
-      '.php': 'php',
-      '.sh': 'shell',
-      '.bash': 'shell',
-      '.zsh': 'shell',
-      '.xml': 'xml',
-      '.yaml': 'yaml',
-      '.yml': 'yaml',
-      '.toml': 'toml',
-      '.sql': 'sql',
-    };
-    return languageMap[ext] || 'plaintext';
-  }
-
   ipcMain.handle(
     IPC_CHANNELS.CODE_EDITOR_LIST_DIR,
     async (_, workspaceRoot: string, relPath: string): Promise<IPCResult<CodeEditorFileNode[]>> => {

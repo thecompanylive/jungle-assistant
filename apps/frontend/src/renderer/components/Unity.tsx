@@ -242,7 +242,7 @@ export function Unity({ projectId }: UnityProps) {
       if (settings.unityEditorsFolder) {
         const result = await window.electronAPI.scanUnityEditorsFolder(settings.unityEditorsFolder);
         if (result.success && result.data) {
-          editorsList = result.data;
+          editorsList = result.data.editors;
         }
       }
 
@@ -283,7 +283,7 @@ export function Unity({ projectId }: UnityProps) {
     try {
       const result = await window.electronAPI.loadUnityRuns(selectedProject.id);
       if (result.success && result.data) {
-        setRuns(result.data);
+        setRuns(result.data.runs);
       }
     } catch (err) {
       console.error('Failed to load Unity runs:', err);

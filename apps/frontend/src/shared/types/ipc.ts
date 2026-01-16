@@ -805,7 +805,7 @@ export interface ElectronAPI {
   testMcpConnection: (server: CustomMcpServer) => Promise<IPCResult<McpTestConnectionResult>>;
 
   // Code Editor operations
-  codeEditorListDir: (workspaceRoot: string, relPath: string) => Promise<IPCResult<import('./common').FileNode[]>>;
+  codeEditorListDir: (workspaceRoot: string, relPath: string) => Promise<IPCResult<FileNode[]>>;
   codeEditorReadFile: (workspaceRoot: string, relPath: string) => Promise<IPCResult<{ content: string; language: string }>>;
   codeEditorWriteFile: (workspaceRoot: string, relPath: string, content: string) => Promise<IPCResult>;
   codeEditorSearchText: (workspaceRoot: string, query: string) => Promise<IPCResult<Array<{ relPath: string; line: number; column: number; preview: string }>>>;
@@ -842,8 +842,14 @@ export interface ElectronAPI {
   getDiagnosticsText: (projectId: string) => Promise<IPCResult<string>>;
   checkUnityBridgeInstalled: (projectId: string) => Promise<IPCResult<{ installed: boolean; path?: string }>>;
   installUnityBridge: (projectId: string) => Promise<IPCResult<{ installed: boolean; path: string }>>;
+  installBridge: (projectId: string) => Promise<IPCResult>;
   runUnityTweak: (projectId: string, params: any) => Promise<IPCResult<{ runId: string }>>;
-  upmResolve: (projectId: string) => Promise<IPCResult<{ runId: string }>>;
+  tweakAddDefine: (projectId: string, editorPath: string, params: any) => Promise<IPCResult>;
+  tweakRemoveDefine: (projectId: string, editorPath: string, params: any) => Promise<IPCResult>;
+  tweakSetBackend: (projectId: string, editorPath: string, params: any) => Promise<IPCResult>;
+  tweakSwitchBuildTarget: (projectId: string, editorPath: string, params: any) => Promise<IPCResult>;
+  upmResolve: (projectId: string, editorPath: string) => Promise<IPCResult>;
+  upmListPackages: (projectId: string) => Promise<IPCResult<{ packages: any[] }>>;
 
   // C# LSP operations
   csharpLspStart: (projectPath: string) => Promise<IPCResult<import('./csharp-lsp').CSharpLspStatusResponse>>;
@@ -861,7 +867,7 @@ export interface ElectronAPI {
   // C# LSP event listeners
   onCSharpLspPublishDiagnostics: (callback: (params: import('./csharp-lsp').CSharpLspPublishDiagnosticsParams) => void) => () => void;
   onCSharpLspProgress: (callback: (message: string) => void) => () => void;
-  onCSharpLspLog: (callback: (message: string) => void) => () => void;
+  onCSharpLspLog: (callback: (logMessage: import('./csharp-lsp').CSharpLspLogMessage) => void) => () => void;
 }
 
 declare global {

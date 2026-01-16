@@ -242,7 +242,7 @@ export function Unity({ projectId }: UnityProps) {
       if (settings.unityEditorsFolder) {
         const result = await window.electronAPI.scanUnityEditorsFolder(settings.unityEditorsFolder);
         if (result.success && result.data) {
-          editorsList = result.data.editors || [];
+          editorsList = result.data;
         }
       }
 
@@ -283,7 +283,7 @@ export function Unity({ projectId }: UnityProps) {
     try {
       const result = await window.electronAPI.loadUnityRuns(selectedProject.id);
       if (result.success && result.data) {
-        setRuns(result.data.runs || []);
+        setRuns(result.data);
       }
     } catch (err) {
       console.error('Failed to load Unity runs:', err);
@@ -299,7 +299,7 @@ export function Unity({ projectId }: UnityProps) {
     try {
       const result = await window.electronAPI.getUnityProfiles(selectedProject.id);
       if (result.success && result.data) {
-        setProfileSettings(result.data);
+        setProfileSettings(result.data as any);
       }
     } catch (err) {
       console.error('Failed to load Unity profiles:', err);
@@ -362,7 +362,7 @@ export function Unity({ projectId }: UnityProps) {
     setRunError(null);
 
     try {
-      const result = await window.electronAPI.runUnityEditModeTests(selectedProject.id, effectiveEditorPath);
+      const result = await window.electronAPI.runUnityEditmodeTests(selectedProject.id, { editorPath: effectiveEditorPath, testFilter: undefined });
       if (result.success) {
         // Refresh runs
         await loadRuns();
@@ -386,8 +386,10 @@ export function Unity({ projectId }: UnityProps) {
     try {
       const result = await window.electronAPI.runUnityBuild(
         selectedProject.id,
-        effectiveEditorPath,
-        buildExecuteMethod
+        {
+          editorPath: effectiveEditorPath,
+          executeMethod: buildExecuteMethod || undefined
+        }
       );
       if (result.success) {
         // Refresh runs
@@ -410,10 +412,10 @@ export function Unity({ projectId }: UnityProps) {
     setRunError(null);
 
     try {
-      const result = await window.electronAPI.runUnityPlayModeTests(
+      const result = await window.electronAPI.runUnityPlaymodeTests(
         selectedProject.id,
-        effectiveEditorPath,
         {
+          editorPath: effectiveEditorPath,
           buildTarget: playModeBuildTarget || undefined,
           testFilter: playModeTestFilter || undefined
         }
@@ -439,7 +441,7 @@ export function Unity({ projectId }: UnityProps) {
     setPipelineError(null);
 
     try {
-      const result = await window.electronAPI.runUnityPipeline(selectedProject.id, {
+      const result = await window.electronAPI.runUnityPipeline(selectedProject.id, 'custom', {
         profileId: profileSettings.activeProfileId,
         steps: pipelineSteps,
         continueOnFail
@@ -526,13 +528,12 @@ export function Unity({ projectId }: UnityProps) {
     setIsDoctorRunning(true);
     try {
       const result = await window.electronAPI.runUnityDoctorChecks(
-        selectedProject.id,
-        effectiveEditorPath
+        selectedProject.id
       );
       if (result.success && result.data) {
         setDoctorReport(result.data);
         // Also check bridge status
-        const bridgeResult = await window.electronAPI.checkBridgeInstalled(selectedProject.id);
+        const bridgeResult = await window.electronAPI.checkUnityBridgeInstalled(selectedProject.id);
         if (bridgeResult.success && bridgeResult.data) {
           setBridgeInstalled(bridgeResult.data.installed);
         }
@@ -679,10 +680,10 @@ export function Unity({ projectId }: UnityProps) {
 
   // M3: Copy diagnostics text
   const copyDiagnostics = async () => {
-    if (!doctorReport) return;
+    if (!doctorReport || !selectedProject) return;
 
     try {
-      const result = await window.electronAPI.getDiagnosticsText(doctorReport);
+      const result = await window.electronAPI.getDiagnosticsText(selectedProject.id);
       if (result.success && result.data) {
         await window.electronAPI.copyToClipboard(result.data);
       }

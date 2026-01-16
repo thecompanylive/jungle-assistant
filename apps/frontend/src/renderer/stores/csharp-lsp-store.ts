@@ -150,7 +150,10 @@ export const useCSharpLspStore = create<CSharpLspState>((set, get) => ({
 
   stop: async (): Promise<boolean> => {
     try {
-      const result = await window.electronAPI.csharpLspStop();
+      const { workspaceRoot } = get();
+      if (!workspaceRoot) return false;
+
+      const result = await window.electronAPI.csharpLspStop(workspaceRoot);
 
       if (result.success) {
         set({
@@ -186,7 +189,7 @@ export const useCSharpLspStore = create<CSharpLspState>((set, get) => ({
     });
 
     const unsubProgress = window.electronAPI.onCSharpLspProgress((message) => {
-      set({ statusMessage: message.message });
+      set({ statusMessage: message });
     });
 
     // Store cleanup functions (you might want to call these on unmount)

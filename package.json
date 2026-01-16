@@ -42,6 +42,12 @@
     "electron"
   ],
   "devDependencies": {
+    "@types/diff": "^7.0.2",
+    "@types/xml2js": "^0.4.14",
     "jsdom": "^27.4.0"
+  },
+  "dependencies": {
+    "diff": "^8.0.3",
+    "xml2js": "^0.6.2"
   }
 }

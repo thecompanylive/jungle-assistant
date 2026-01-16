@@ -249,15 +249,15 @@ export function CodeEditor({ projectId }: CodeEditorProps) {
 
       if (result.success && result.data !== undefined) {
         const fileName = relPath.split('/').pop() || relPath;
-        const language = result.data.language || getMonacoLanguage(relPath);
+        const language = getMonacoLanguage(relPath);
 
         const newTab: EditorTab = {
           id: `${Date.now()}-${Math.random()}`,
           relPath,
           fileName,
           language,
-          originalContent: result.data.content,
-          content: result.data.content,
+          originalContent: result.data,
+          content: result.data,
           isDirty: false,
           lastOpenedAt: Date.now()
         };

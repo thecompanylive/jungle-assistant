@@ -806,7 +806,7 @@ export interface ElectronAPI {
 
   // Code Editor operations
   codeEditorListDir: (workspaceRoot: string, relPath: string) => Promise<IPCResult<FileNode[]>>;
-  codeEditorReadFile: (workspaceRoot: string, relPath: string) => Promise<IPCResult<{ content: string; language: string }>>;
+  codeEditorReadFile: (workspaceRoot: string, relPath: string) => Promise<IPCResult<string>>;
   codeEditorWriteFile: (workspaceRoot: string, relPath: string, content: string) => Promise<IPCResult>;
   codeEditorSearchText: (workspaceRoot: string, query: string) => Promise<IPCResult<Array<{ relPath: string; line: number; column: number; preview: string }>>>;
 
